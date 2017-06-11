@@ -201,6 +201,7 @@ function createSagaRunner({ dispatch, getState }) {
 
     function runTask(task, isThrown, value) {
 
+        // eslint-disable-next-line no-constant-condition
         while (true) {
 
             let yielded;

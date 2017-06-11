@@ -93,7 +93,7 @@
         "dot-location": ["error", "property"],
         "dot-notation": "off",
         "eqeqeq": ["error", "always", {"null": "ignore"}],
-        "guard-for-in": "error",
+        "guard-for-in": "off",
         "no-alert": "error",
         "no-caller": "error",
         "no-case-declarations": "error",
@@ -270,7 +270,7 @@
         ],
         "max-nested-callbacks": ["error", 3],
         "max-params": ["error", 8],
-        "max-statements": ["error", 43],
+        "max-statements": ["error", 45],
         "max-statements-per-line": [
             "error",
             {

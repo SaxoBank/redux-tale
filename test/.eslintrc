@@ -3,6 +3,7 @@
     "jest": true
   },
   "rules": {
-    "no-throw-literal": "off"
+    "no-throw-literal": "off",
+    "brace-style": "off"
   }
 }
