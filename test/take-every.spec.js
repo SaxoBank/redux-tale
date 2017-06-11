@@ -10,6 +10,7 @@ describe('take-every', () => {
     let sagaMiddleware;
     let store;
     let newState;
+    let onerror;
 
     beforeEach(() => {
         sagaMiddleware = createSagaMiddleware();
@@ -18,6 +19,12 @@ describe('take-every', () => {
             () => newState,
             applyMiddleware(sagaMiddleware)
         );
+        onerror = jest.fn();
+        window.onerror = onerror;
+    });
+
+    afterEach(() => {
+        window.onerror = null;
     });
 
     it('gets an action first argument', () => {
@@ -34,6 +41,7 @@ describe('take-every', () => {
         };
         store.dispatch(action);
         expect(order).toEqual([action]);
+        expect(onerror).not.toHaveBeenCalled();
     });
 
     it('works resolving at end', () => {
@@ -56,6 +64,7 @@ describe('take-every', () => {
         });
         mockPromiseHelper.tick();
         expect(order).toEqual([[2, 3], [2, 3]]);
+        expect(onerror).not.toHaveBeenCalled();
     });
 
     it('works resolving as it goes', () => {
@@ -79,6 +88,7 @@ describe('take-every', () => {
         });
         mockPromiseHelper.tick();
         expect(order).toEqual([[2, 3], [2, 3]]);
+        expect(onerror).not.toHaveBeenCalled();
     });
 
     it('works sync', () => {
@@ -99,5 +109,25 @@ describe('take-every', () => {
             type: 1,
         });
         expect(order).toEqual([[2, 3], [2, 3]]);
+        expect(onerror).not.toHaveBeenCalled();
+    });
+
+    it('fires exceptions on window', () => {
+
+        const exception = new Error();
+        function *every() {
+            throw exception;
+        }
+
+        sagaMiddleware.run(takeEvery('*', every));
+        store.dispatch({
+            type: 1,
+        });
+        store.dispatch({
+            type: 2,
+        });
+        expect(onerror).toHaveBeenCalledTimes(0);
+        jest.runAllTimers();
+        expect(onerror).toHaveBeenCalledTimes(2);
     });
 });

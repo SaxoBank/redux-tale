@@ -24,7 +24,8 @@
     "src"
   ],
   "jest": {
-    "coveragePathIgnorePatterns": ["test"]
+    "coveragePathIgnorePatterns": ["test"],
+    "timers": "fake"
   },
   "repository": {
     "type": "git",
