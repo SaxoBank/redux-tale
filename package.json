@@ -22,7 +22,8 @@
   "jsnext:main": "es/index.js",
   "files": [
     "dist",
-    "src"
+    "es",
+    "lib"
   ],
   "jest": {
     "coveragePathIgnorePatterns": [
