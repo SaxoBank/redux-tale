@@ -2,11 +2,12 @@ import nodeResolve from 'rollup-plugin-node-resolve';
 import babel from 'rollup-plugin-babel';
 import replace from 'rollup-plugin-replace';
 import uglify from 'rollup-plugin-uglify';
+import { minify } from 'uglify-es';
 
 var env = process.env.NODE_ENV
 var config = {
     format: 'umd',
-    moduleName: 'Redux',
+    moduleName: 'redux-tale',
     plugins: [
         nodeResolve({
             jsnext: true
@@ -28,15 +29,8 @@ if (env === 'production') {
                 unsafe: true,
                 unsafe_comps: true,
                 warnings: false,
-                screw_ie8: false
             },
-            mangle: {
-                screw_ie8: false
-            },
-            output: {
-                screw_ie8: false
-            }
-        })
+        }, minify)
     )
 }
 
