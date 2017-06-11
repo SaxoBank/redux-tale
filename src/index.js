@@ -1,4 +1,3 @@
-/* eslint xo/filename-case: "off", lodash/prefer-lodash-method:"off", max-statements:"off", no-constant-condition:"off" */
 import { TAKE, SPAWN, PUT, SELECT, CALL } from './effects';
 
 export function delay(ms, value) {

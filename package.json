@@ -7,7 +7,7 @@
   "scripts": {
     "clean": "rimraf lib dist es coverage",
     "lint": "eslint src test",
-    "test": "cross-env BABEL_ENV=commonjs jest",
+    "test": "cross-env BABEL_ENV=commonjs jest s",
     "test:watch": "npm test -- --watch",
     "test:cov": "npm test -- --coverage",
     "build:commonjs": "cross-env BABEL_ENV=commonjs babel src --out-dir lib",
@@ -23,6 +23,9 @@
     "dist",
     "src"
   ],
+  "jest": {
+    "coveragePathIgnorePatterns": ["test"]
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/SaxoBank/redux-tale.git"

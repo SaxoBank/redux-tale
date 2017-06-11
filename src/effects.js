@@ -1,10 +1,12 @@
-/* eslint lodash/prefer-lodash-method:"off", guard-for-in:"off" */
 export const CALL = 'CALL';
 export function call(func, ...args) {
     let context = undefined;
     if (Array.isArray(func)) {
         context = func[0];
         func = func[1];
+    }
+    if (typeof func === 'string') {
+        func = context[func];
     }
     return {
         type: CALL,
