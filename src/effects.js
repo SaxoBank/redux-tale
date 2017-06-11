@@ -61,7 +61,7 @@ export function takeEvery(pattern, worker, ...args) {
 }
 
 function* raceWorker(effect) {
-    yield effect;
+    return yield effect;
 }
 
 function createRaceResult(otherTasks, finishedKey, finishedTask) {
@@ -73,29 +73,27 @@ function createRaceResult(otherTasks, finishedKey, finishedTask) {
     return { [finishedKey]: finishedTask.value };
 }
 
-export function race(raceMap) {
-    return function* () {
-        const raceTasks = [];
-        for (const key in raceMap) {
-            const task = yield spawn(raceWorker, raceMap[key]);
-            if (task.done) {
-                return createRaceResult(raceTasks, key, task);
-            }
-            raceTasks[key] = task;
+export function* race(raceMap) {
+    const raceTasks = [];
+    for (const key in raceMap) {
+        const task = yield spawn(raceWorker, raceMap[key]);
+        if (task.done) {
+            return createRaceResult(raceTasks, key, task);
         }
-        return yield new Promise((resolve, reject) => {
-            for (const key in raceTasks) {
-                raceTasks[key].callback = (isThrown) => {
-                    const result = createRaceResult(raceTasks, key, raceTasks[key]);
-                    if (isThrown) {
-                        reject(result);
-                    } else {
-                        resolve(result);
-                    }
-                };
-            }
-        });
-    };
+        raceTasks[key] = task;
+    }
+    return yield new Promise((resolve, reject) => {
+        for (const key in raceTasks) {
+            raceTasks[key].callback = (isThrown) => {
+                const result = createRaceResult(raceTasks, key, raceTasks[key]);
+                if (isThrown) {
+                    reject(result);
+                } else {
+                    resolve(result);
+                }
+            };
+        }
+    });
 }
 
 export const SPAWN = 'SPAWN';
