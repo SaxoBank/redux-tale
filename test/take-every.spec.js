@@ -1,11 +1,8 @@
 import { createStore, applyMiddleware } from 'redux';
-import mockPromiseHelper from './mocks/mock-promise-helper';
 import createSagaMiddleware from '../src';
 import { takeEvery } from '../src/effects';
 
 describe('take-every', () => {
-
-    mockPromiseHelper.use();
 
     let sagaMiddleware;
     let store;
@@ -62,7 +59,7 @@ describe('take-every', () => {
         store.dispatch({
             type: 1,
         });
-        mockPromiseHelper.tick();
+        jest.runAllTimers();
         expect(order).toEqual([[2, 3], [2, 3]]);
         expect(onerror).not.toHaveBeenCalled();
     });
@@ -82,11 +79,11 @@ describe('take-every', () => {
         store.dispatch({
             type: 2,
         });
-        mockPromiseHelper.tick();
+        jest.runAllTimers();
         store.dispatch({
             type: 1,
         });
-        mockPromiseHelper.tick();
+        jest.runAllTimers();
         expect(order).toEqual([[2, 3], [2, 3]]);
         expect(onerror).not.toHaveBeenCalled();
     });

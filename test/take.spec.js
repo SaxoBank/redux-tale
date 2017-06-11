@@ -1,11 +1,8 @@
 import { createStore, applyMiddleware } from 'redux';
-import mockPromiseHelper from './mocks/mock-promise-helper';
 import createSagaMiddleware from '../src';
 import { take } from '../src/effects';
 
 describe('take', () => {
-
-    mockPromiseHelper.use();
 
     let sagaMiddleware;
     let store;

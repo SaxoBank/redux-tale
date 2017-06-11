@@ -1,10 +1,7 @@
 import { createStore, applyMiddleware } from 'redux';
-import mockPromiseHelper from './mocks/mock-promise-helper';
 import createSagaMiddleware from '../src';
 
 describe('exceptions', () => {
-
-    mockPromiseHelper.use();
 
     let sagaMiddleware;
     let newState;
@@ -28,7 +25,7 @@ describe('exceptions', () => {
             }
         }
         sagaMiddleware.run(test);
-        mockPromiseHelper.tick();
+        jest.runAllTimers();
         expect(order).toEqual([1]);
     });
 
@@ -44,7 +41,7 @@ describe('exceptions', () => {
             }
         }
         sagaMiddleware.run(test);
-        mockPromiseHelper.tick();
+        jest.runAllTimers();
         expect(order).toEqual([1]);
     });
 
@@ -60,7 +57,7 @@ describe('exceptions', () => {
             }
         }
         sagaMiddleware.run(test);
-        mockPromiseHelper.tick();
+        jest.runAllTimers();
         expect(order).toEqual([1]);
     });
 
@@ -78,7 +75,7 @@ describe('exceptions', () => {
             }
         }
         sagaMiddleware.run(test);
-        mockPromiseHelper.tick();
+        jest.runAllTimers();
         expect(order).toEqual([1]);
     });
 
@@ -96,7 +93,7 @@ describe('exceptions', () => {
             }
         }
         sagaMiddleware.run(test);
-        mockPromiseHelper.tick();
+        jest.runAllTimers();
         expect(order).toEqual([1]);
     });
 });

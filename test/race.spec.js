@@ -1,11 +1,8 @@
 import { createStore, applyMiddleware } from 'redux';
-import mockPromiseHelper from './mocks/mock-promise-helper';
 import createSagaMiddleware, { delay } from '../src';
 import { race, call } from '../src/effects';
 
 describe('race', () => {
-
-    mockPromiseHelper.use();
 
     let sagaMiddleware;
     let newState;
@@ -29,7 +26,7 @@ describe('race', () => {
         }
         sagaMiddleware.run(test);
         jest.runAllTimers();
-        mockPromiseHelper.tick();
+        jest.runAllTimers();
         expect(raceValue).toEqual({
             delayRunner: 2,
         });

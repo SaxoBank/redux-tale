@@ -1,10 +1,7 @@
 import { createStore, applyMiddleware } from 'redux';
-import mockPromiseHelper from './mocks/mock-promise-helper';
 import createSagaMiddleware from '../src';
 
 describe('basic tests', () => {
-
-    mockPromiseHelper.use();
 
     let sagaMiddleware;
     let newState;
@@ -40,7 +37,7 @@ describe('basic tests', () => {
 
         sagaMiddleware.run(test);
         expect(isRun).toEqual(false);
-        mockPromiseHelper.tick();
+        jest.runAllTimers();
         expect(isRun).toEqual(true);
     });
 
@@ -59,7 +56,7 @@ describe('basic tests', () => {
 
         sagaMiddleware.run(test);
         expect(isRun).toEqual(false);
-        mockPromiseHelper.tick();
+        jest.runAllTimers();
         expect(isRun).toEqual(true);
     });
 
@@ -79,7 +76,7 @@ describe('basic tests', () => {
         sagaMiddleware.run(test);
         expect(isRun1).toEqual(false);
         expect(isRun2).toEqual(false);
-        mockPromiseHelper.tick();
+        jest.runAllTimers();
         expect(isRun1).toEqual(1);
         expect(isRun2).toEqual(2);
     });
@@ -167,7 +164,7 @@ describe('basic tests', () => {
         sagaMiddleware.run(test);
         expect(isRun1).toEqual(false);
         expect(isRun2).toEqual(false);
-        mockPromiseHelper.tick();
+        jest.runAllTimers();
         expect(isRun1).toEqual(1);
         expect(isRun2).toEqual(2);
     });
@@ -208,7 +205,7 @@ describe('basic tests', () => {
         }
 
         sagaMiddleware.run(test);
-        mockPromiseHelper.tick();
+        jest.runAllTimers();
         expect(isRun1).toEqual(1);
         expect(isRun2).toEqual(2);
     });
@@ -235,7 +232,7 @@ describe('basic tests', () => {
         }
 
         sagaMiddleware.run(test);
-        mockPromiseHelper.tick();
+        jest.runAllTimers();
         expect(isRun).toEqual(true);
         expect(order).toEqual([1, 2, 3]);
     });

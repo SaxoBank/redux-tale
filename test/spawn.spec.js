@@ -1,11 +1,8 @@
 import { createStore, applyMiddleware } from 'redux';
-import mockPromiseHelper from './mocks/mock-promise-helper';
 import createSagaMiddleware from '../src';
 import { spawn } from '../src/effects';
 
 describe('spawn', () => {
-
-    mockPromiseHelper.use();
 
     let sagaMiddleware;
     let newState;
@@ -31,7 +28,7 @@ describe('spawn', () => {
             }, 1, 2);
         }
         sagaMiddleware.run(test);
-        mockPromiseHelper.tick();
+        jest.runAllTimers();
         expect(order).toEqual([[1, 2], [3, 4]]);
     });
 
@@ -47,7 +44,7 @@ describe('spawn', () => {
             });
         }
         sagaMiddleware.run(test);
-        mockPromiseHelper.tick();
+        jest.runAllTimers();
         expect(order).toEqual([1, 2]);
     });
 });

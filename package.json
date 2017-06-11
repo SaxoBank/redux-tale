@@ -25,7 +25,8 @@
   ],
   "jest": {
     "coveragePathIgnorePatterns": ["test"],
-    "timers": "fake"
+    "timers": "fake",
+    "setupFiles": ["./test/promise-polyfill"]
   },
   "repository": {
     "type": "git",
@@ -33,10 +34,8 @@
   },
   "license": "Apache-2.0",
   "devDependencies": {
-    "asap": "2.0.5",
     "babel-cli": "^6.3.15",
     "babel-core": "^6.3.15",
-    "babel-eslint": "^7.0.0",
     "babel-jest": "^18.0.0",
     "babel-plugin-check-es2015-constants": "^6.3.13",
     "babel-plugin-transform-es2015-arrow-functions": "^6.3.13",
@@ -64,10 +63,8 @@
     "eslint-plugin-import": "2.2.0",
     "eslint-plugin-promise": "3.5.0",
     "eslint-plugin-switch-case": "1.1.2",
-    "gitbook-cli": "^2.3.0",
     "glob": "^7.1.1",
     "jest": "18.1.0",
-    "lodash": "4.17.4",
     "redux": "3.6.0",
     "rimraf": "^2.3.4",
     "rollup": "^0.41.4",
@@ -75,7 +72,6 @@
     "rollup-plugin-node-resolve": "^2.0.0",
     "rollup-plugin-replace": "^1.1.1",
     "rollup-plugin-uglify": "^1.0.1",
-    "rxjs": "^5.0.0-beta.6",
     "yaku": "0.18.0"
   }
 }
