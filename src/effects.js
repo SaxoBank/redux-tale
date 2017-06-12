@@ -9,7 +9,7 @@ export function call(func, ...args) {
         func = context[func];
     }
     return {
-        type: CALL,
+        __reduxTaleType: CALL,
         context,
         func,
         args,
@@ -18,7 +18,7 @@ export function call(func, ...args) {
 
 export function apply(context, func, args) {
     return {
-        type: CALL,
+        __reduxTaleType: CALL,
         context,
         func,
         args,
@@ -28,7 +28,7 @@ export function apply(context, func, args) {
 export const TAKE = 'TAKE';
 export function take(pattern) {
     return {
-        type: TAKE,
+        __reduxTaleType: TAKE,
         pattern,
     };
 }
@@ -99,7 +99,7 @@ export function* race(raceMap) {
 export const SPAWN = 'SPAWN';
 export function spawn(worker, ...args) {
     return {
-        type: SPAWN,
+        __reduxTaleType: SPAWN,
         worker,
         args,
     };
@@ -108,7 +108,7 @@ export function spawn(worker, ...args) {
 export const PUT = 'PUT';
 export function put(action) {
     return {
-        type: PUT,
+        __reduxTaleType: PUT,
         action,
     };
 }
@@ -116,7 +116,7 @@ export function put(action) {
 export const SELECT = 'SELECT';
 export function select(selector, ...args) {
     return {
-        type: SELECT,
+        __reduxTaleType: SELECT,
         selector,
         args,
     };

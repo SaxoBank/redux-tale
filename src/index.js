@@ -127,19 +127,18 @@ function createSagaRunner({ dispatch, getState }) {
         }
 
         // is a generator action
-        // TODO make type -> __redux_gen_type
-        if (value.type) {
+        if (value.__reduxTaleType) {
 
-            if (value.type === effects.TAKE) {
+            if (value.__reduxTaleType === effects.TAKE) {
                 take(value.pattern, makeCallback(task, callbackArg));
                 return false;
             }
 
-            if (value.type === effects.SPAWN) {
+            if (value.__reduxTaleType === effects.SPAWN) {
                 return { value: runGenObj(value.worker(...value.args)) };
             }
 
-            if (value.type === effects.SELECT) {
+            if (value.__reduxTaleType === effects.SELECT) {
                 const state = getState();
                 if (value.selector) {
                     return { value: value.selector(state, ...value.args) };
@@ -147,15 +146,17 @@ function createSagaRunner({ dispatch, getState }) {
                 return { value: state };
             }
 
-            if (value.type === effects.PUT) {
+            if (value.__reduxTaleType === effects.PUT) {
                 return { value: dispatch(value.action) };
             }
 
-            if (value.type === effects.CALL) {
+            if (value.__reduxTaleType === effects.CALL) {
                 // TODO - in redux-saga, does doing
                 // call(returnsArrayOfPromises) => arrayOfValues ?
                 return resolveValue(value.func.apply(value.context, value.args), task, makeCallback, callbackArg);
             }
+
+            throw new Error('unrecognised redux tale effect');
         }
 
         // is generator

@@ -153,6 +153,22 @@ describe('basic tests', () => {
         expect(result).toEqual([null, undefined]);
     });
 
+    it('unknown effects throw an error', () => {
+        function *test() {
+            yield {
+                __reduxTaleType: 'nonExistingEffect',
+            };
+        }
+
+        let exception = null;
+        try {
+            sagaMiddleware.run(test);
+        } catch (e) {
+            exception = e;
+        }
+        expect(exception.message).toEqual('unrecognised redux tale effect');
+    });
+
     it('handles an array of two promises', () => {
         let isRun1 = false;
         let isRun2 = false;

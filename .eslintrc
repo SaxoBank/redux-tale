@@ -270,7 +270,7 @@
         ],
         "max-nested-callbacks": ["error", 3],
         "max-params": ["error", 8],
-        "max-statements": ["error", 45],
+        "max-statements": ["error", 50],
         "max-statements-per-line": [
             "error",
             {

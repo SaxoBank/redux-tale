@@ -74,7 +74,7 @@ describe('race', () => {
         function *test() {
             raceValue = yield race({
                 runner1: call(function *() {
-                    while(true) {
+                    while (true) {
                         yield delay(1);
                         iterations++;
                     }
@@ -106,7 +106,7 @@ describe('race', () => {
                         yield delay(2);
                     }),
                 });
-            } catch(e) {
+            } catch (e) {
                 raceValue = e;
             }
         }
