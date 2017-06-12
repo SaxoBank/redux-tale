@@ -60,40 +60,12 @@ export function takeEvery(pattern, worker, ...args) {
     };
 }
 
-function* raceWorker(effect) {
-    return yield effect;
-}
-
-function createRaceResult(otherTasks, finishedKey, finishedTask) {
-    for (const key in otherTasks) {
-        if (key !== finishedKey) {
-            otherTasks[key].cancel();
-        }
-    }
-    return { [finishedKey]: finishedTask.value };
-}
-
-export function* race(raceMap) {
-    const raceTasks = [];
-    for (const key in raceMap) {
-        const task = yield spawn(raceWorker, raceMap[key]);
-        if (task.done) {
-            return createRaceResult(raceTasks, key, task);
-        }
-        raceTasks[key] = task;
-    }
-    return yield new Promise((resolve, reject) => {
-        for (const key in raceTasks) {
-            raceTasks[key].callback = (isThrown) => {
-                const result = createRaceResult(raceTasks, key, raceTasks[key]);
-                if (isThrown) {
-                    reject(result);
-                } else {
-                    resolve(result);
-                }
-            };
-        }
-    });
+export const RACE = 'RACE';
+export function race(raceMap) {
+    return {
+        __reduxTaleType: RACE,
+        raceMap,
+    };
 }
 
 export const SPAWN = 'SPAWN';
