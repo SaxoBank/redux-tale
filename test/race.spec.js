@@ -26,7 +26,6 @@ describe('race', () => {
         }
         sagaMiddleware.run(test);
         jest.runAllTimers();
-        jest.runAllTimers();
         expect(raceValue).toEqual({
             delayRunner: 2,
         });
@@ -67,5 +66,53 @@ describe('race', () => {
             runner1: 1,
         });
         expect(calledSecond).toEqual(false);
+    });
+
+    it('cancels tasks', () => {
+        let raceValue = null;
+        let iterations = 0;
+        function *test() {
+            raceValue = yield race({
+                runner1: call(function *() {
+                    while(true) {
+                        yield delay(1);
+                        iterations++;
+                    }
+                }),
+                runner2: call(function *() {
+                    yield delay(1);
+                }),
+            });
+        }
+        sagaMiddleware.run(test);
+        jest.runAllTimers();
+        expect(raceValue).toEqual({
+            runner2: undefined,
+        });
+        expect(iterations).toEqual(1);
+    });
+
+    it('handles exceptions', () => {
+        let raceValue = null;
+        function *test() {
+            try {
+                yield race({
+                    runner1: call(function *() {
+                        yield delay(1);
+                        throw 3;
+                    }),
+                    runner2: call(function *() {
+                        yield delay(2);
+                    }),
+                });
+            } catch(e) {
+                raceValue = e;
+            }
+        }
+        sagaMiddleware.run(test);
+        jest.runAllTimers();
+        expect(raceValue).toEqual({
+            runner1: 3,
+        });
     });
 });

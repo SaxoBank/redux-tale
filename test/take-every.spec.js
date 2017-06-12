@@ -127,4 +127,42 @@ describe('take-every', () => {
         jest.runAllTimers();
         expect(onerror).toHaveBeenCalledTimes(2);
     });
+
+    it('takes *', () => {
+        const order = [];
+
+        function *every(action) {
+            order.push(action);
+        }
+
+        sagaMiddleware.run(takeEvery('*', every));
+        const action = {
+            type: 1,
+            extra: true,
+        };
+        store.dispatch(action);
+        expect(order).toEqual([action]);
+        expect(onerror).not.toHaveBeenCalled();
+    });
+
+    it('takes function', () => {
+        const order = [];
+
+        function *every(action) {
+            order.push(action);
+        }
+
+        sagaMiddleware.run(takeEvery((action) => action.extra, every));
+        const action = {
+            type: 1,
+            extra: true,
+        };
+        store.dispatch(action);
+        store.dispatch({
+            type: 1,
+            extra: false,
+        });
+        expect(order).toEqual([action]);
+        expect(onerror).not.toHaveBeenCalled();
+    });
 });
