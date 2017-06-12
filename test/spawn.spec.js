@@ -47,4 +47,26 @@ describe('spawn', () => {
         jest.runAllTimers();
         expect(order).toEqual([1, 2]);
     });
+
+    it('spawned tasks have isRunning - returns true when done', () => {
+        let task;
+        function *test() {
+            task = yield spawn(function* test2() {
+                return 1;
+            });
+        }
+        sagaMiddleware.run(test);
+        expect(task.isRunning()).toEqual(false);
+    });
+
+    it('spawned tasks have isRunning - returns false when in progress', () => {
+        let task;
+        function *test() {
+            task = yield spawn(function* test2() {
+                yield new Promise(() => {});
+            });
+        }
+        sagaMiddleware.run(test);
+        expect(task.isRunning()).toEqual(true);
+    });
 });

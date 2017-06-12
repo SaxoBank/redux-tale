@@ -86,6 +86,7 @@ describe('race', () => {
         }
         sagaMiddleware.run(test);
         jest.runAllTimers();
+        jest.runAllTimers();
         expect(raceValue).toEqual({
             runner2: undefined,
         });
