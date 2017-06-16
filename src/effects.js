@@ -60,6 +60,25 @@ export function takeEvery(pattern, worker, ...args) {
     };
 }
 
+export function takeLatest(pattern, worker, ...args) {
+    return function* () {
+        // eslint-disable-next-line no-constant-condition
+        let task;
+        while (true) {
+            if (task && !task.done) {
+                task.cancel();
+            }
+            const action = yield take(pattern);
+            task = yield spawn(worker, action, ...args);
+            if (task.done) {
+                onTaskCatchError(task.thrown, task.value);
+            } else {
+                task.callback = onTaskCatchError;
+            }
+        }
+    };
+}
+
 export const RACE = 'RACE';
 export function race(raceMap) {
     return {
