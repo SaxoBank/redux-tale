@@ -1,17 +1,17 @@
 import { createStore, applyMiddleware } from 'redux';
-import createSagaMiddleware from '../src';
+import createTaleMiddleware from '../src';
 
 describe('basic tests', () => {
 
-    let sagaMiddleware;
+    let taleMiddleware;
     let newState;
 
     beforeEach(() => {
-        sagaMiddleware = createSagaMiddleware();
+        taleMiddleware = createTaleMiddleware();
         newState = {};
         createStore(
             () => newState,
-            applyMiddleware(sagaMiddleware)
+            applyMiddleware(taleMiddleware)
         );
     });
 
@@ -22,7 +22,7 @@ describe('basic tests', () => {
             isRun = true;
         }
 
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         expect(isRun).toEqual(true);
     });
 
@@ -35,7 +35,7 @@ describe('basic tests', () => {
             });
         }
 
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         expect(isRun).toEqual(false);
         jest.runAllTimers();
         expect(isRun).toEqual(true);
@@ -54,7 +54,7 @@ describe('basic tests', () => {
             }
         }
 
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         expect(isRun).toEqual(false);
         jest.runAllTimers();
         expect(isRun).toEqual(true);
@@ -73,7 +73,7 @@ describe('basic tests', () => {
             });
         }
 
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         expect(isRun1).toEqual(false);
         expect(isRun2).toEqual(false);
         jest.runAllTimers();
@@ -90,7 +90,7 @@ describe('basic tests', () => {
             })();
         }
 
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         expect(isRun).toEqual(true);
     });
 
@@ -103,7 +103,7 @@ describe('basic tests', () => {
             })();
         }
 
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         expect(isRun).toEqual(true);
     });
 
@@ -114,7 +114,7 @@ describe('basic tests', () => {
             [isRun] = yield [true];
         }
 
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         expect(isRun).toEqual(true);
     });
 
@@ -126,7 +126,7 @@ describe('basic tests', () => {
             [isRun1, isRun2] = yield [1, 2];
         }
 
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         expect(isRun1).toEqual(1);
         expect(isRun2).toEqual(2);
     });
@@ -138,7 +138,7 @@ describe('basic tests', () => {
             isNull = yield null;
         }
 
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         expect(isNull).toEqual(null);
     });
 
@@ -149,7 +149,7 @@ describe('basic tests', () => {
             result = yield [null, undefined];
         }
 
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         expect(result).toEqual([null, undefined]);
     });
 
@@ -162,7 +162,7 @@ describe('basic tests', () => {
 
         let exception = null;
         try {
-            sagaMiddleware.run(test);
+            taleMiddleware.run(test);
         } catch (e) {
             exception = e;
         }
@@ -177,7 +177,7 @@ describe('basic tests', () => {
             [isRun1, isRun2] = yield [Promise.resolve(1), Promise.resolve(2)];
         }
 
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         expect(isRun1).toEqual(false);
         expect(isRun2).toEqual(false);
         jest.runAllTimers();
@@ -200,7 +200,7 @@ describe('basic tests', () => {
             ];
         }
 
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         expect(isRun1).toEqual(1);
         expect(isRun2).toEqual(2);
     });
@@ -220,7 +220,7 @@ describe('basic tests', () => {
             ];
         }
 
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         jest.runAllTimers();
         expect(isRun1).toEqual(1);
         expect(isRun2).toEqual(2);
@@ -247,7 +247,7 @@ describe('basic tests', () => {
             isRun = (one + two + three) === 6;
         }
 
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         jest.runAllTimers();
         expect(isRun).toEqual(true);
         expect(order).toEqual([1, 2, 3]);

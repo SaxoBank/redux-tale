@@ -38,7 +38,7 @@ function onTaskCatchError(isThrown, value) {
         // set timeout since jasmine doesn't expect window.onerror to be called from its own context
         setTimeout(() => {
             window.onerror({
-                message: 'Unhandled exception in saga:' + value,
+                message: 'Unhandled exception in tale:' + value,
                 stack: value && value.stack,
             });
         });

@@ -1,18 +1,18 @@
 import { createStore, applyMiddleware } from 'redux';
-import createSagaMiddleware from '../src';
+import createTaleMiddleware from '../src';
 import { spawn } from '../src/effects';
 
 describe('spawn', () => {
 
-    let sagaMiddleware;
+    let taleMiddleware;
     let newState;
 
     beforeEach(() => {
-        sagaMiddleware = createSagaMiddleware();
+        taleMiddleware = createTaleMiddleware();
         newState = {};
         createStore(
             () => newState,
-            applyMiddleware(sagaMiddleware)
+            applyMiddleware(taleMiddleware)
         );
     });
 
@@ -27,7 +27,7 @@ describe('spawn', () => {
                 order.push(args);
             }, 1, 2);
         }
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         jest.runAllTimers();
         expect(order).toEqual([[1, 2], [3, 4]]);
     });
@@ -43,7 +43,7 @@ describe('spawn', () => {
                 order.push(2);
             });
         }
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         jest.runAllTimers();
         expect(order).toEqual([1, 2]);
     });
@@ -55,7 +55,7 @@ describe('spawn', () => {
                 return 1;
             });
         }
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         expect(task.isRunning()).toEqual(false);
     });
 
@@ -66,7 +66,7 @@ describe('spawn', () => {
                 yield new Promise(() => {});
             });
         }
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         expect(task.isRunning()).toEqual(true);
     });
 });

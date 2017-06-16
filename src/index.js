@@ -224,17 +224,17 @@ function createTaleRunner({ dispatch, getState }) {
  * @returns tale enabled redux
  */
 export default function createTaleMiddleware() {
-    let sagaRunner;
-    function sagaMiddleware({ dispatch, getState }) {
+    let taleRunner;
+    function taleMiddleware({ dispatch, getState }) {
 
-        sagaRunner = createTaleRunner({ dispatch, getState });
-        sagaMiddleware.run = sagaRunner.run;
+        taleRunner = createTaleRunner({ dispatch, getState });
+        taleMiddleware.run = taleRunner.run;
 
         return (nextDispatch) => (action) => {
             const value = nextDispatch(action);
-            sagaRunner.emit(action);
+            taleRunner.emit(action);
             return value;
         };
     }
-    return sagaMiddleware;
+    return taleMiddleware;
 }

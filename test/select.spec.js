@@ -1,19 +1,19 @@
 import { createStore, applyMiddleware } from 'redux';
-import createSagaMiddleware from '../src';
+import createTaleMiddleware from '../src';
 import { select } from '../src/effects';
 
 describe('select', () => {
 
-    let sagaMiddleware;
+    let taleMiddleware;
     let store;
     let newState;
 
     beforeEach(() => {
-        sagaMiddleware = createSagaMiddleware();
+        taleMiddleware = createTaleMiddleware();
         newState = {};
         store = createStore(
             () => newState,
-            applyMiddleware(sagaMiddleware)
+            applyMiddleware(taleMiddleware)
         );
     });
 
@@ -26,7 +26,7 @@ describe('select', () => {
 
         newState = { a: 1 };
         store.dispatch({ type: 'update-state' });
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         expect(order).toEqual([newState]);
     });
 
@@ -39,7 +39,7 @@ describe('select', () => {
 
         newState = { a: 1 };
         store.dispatch({ type: 'update-state' });
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         expect(order).toEqual([1]);
     });
 
@@ -52,7 +52,7 @@ describe('select', () => {
 
         newState = { a: 1 };
         store.dispatch({ type: 'update-state' });
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         expect(order).toEqual([1, 2]);
     });
 });

@@ -1,19 +1,19 @@
 import { createStore, applyMiddleware } from 'redux';
-import createSagaMiddleware from '../src';
+import createTaleMiddleware from '../src';
 import { put } from '../src/effects';
 
 describe('put', () => {
 
-    let sagaMiddleware;
+    let taleMiddleware;
     let store;
     let newState;
 
     beforeEach(() => {
-        sagaMiddleware = createSagaMiddleware();
+        taleMiddleware = createTaleMiddleware();
         newState = {};
         store = createStore(
             () => newState,
-            applyMiddleware(sagaMiddleware)
+            applyMiddleware(taleMiddleware)
         );
     });
 
@@ -24,7 +24,7 @@ describe('put', () => {
 
         newState = { a: 1 };
         expect(store.getState()).toEqual({});
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         expect(store.getState()).toEqual(newState);
     });
 });

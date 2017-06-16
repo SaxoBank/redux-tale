@@ -1,18 +1,18 @@
 import { createStore, applyMiddleware } from 'redux';
-import createSagaMiddleware from '../src';
+import createTaleMiddleware from '../src';
 import { call, apply } from '../src/effects';
 
 describe('call and apply', () => {
 
-    let sagaMiddleware;
+    let taleMiddleware;
     let newState;
 
     beforeEach(() => {
-        sagaMiddleware = createSagaMiddleware();
+        taleMiddleware = createTaleMiddleware();
         newState = {};
         createStore(
             () => newState,
-            applyMiddleware(sagaMiddleware)
+            applyMiddleware(taleMiddleware)
         );
     });
 
@@ -23,7 +23,7 @@ describe('call and apply', () => {
             yield call(toCall);
         }
 
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         expect(toCall).toHaveBeenCalledTimes(1);
     });
 
@@ -34,7 +34,7 @@ describe('call and apply', () => {
             yield apply(null, toCall);
         }
 
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         expect(toCall).toHaveBeenCalledTimes(1);
     });
 
@@ -46,7 +46,7 @@ describe('call and apply', () => {
             yield call(toCall, 1, 2, 3);
         }
 
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         expect(toCall).toHaveBeenCalledTimes(1);
         expect(toCall).toHaveBeenCalledWith(1, 2, 3);
         expect(calledContext).toBe(undefined);
@@ -60,7 +60,7 @@ describe('call and apply', () => {
             yield apply(4, toCall, [1, 2, 3]);
         }
 
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         expect(toCall).toHaveBeenCalledTimes(1);
         expect(toCall).toHaveBeenCalledWith(1, 2, 3);
         expect(calledContext).toBe(4);
@@ -74,7 +74,7 @@ describe('call and apply', () => {
             yield call([4, toCall], 1, 2, 3);
         }
 
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         expect(toCall).toHaveBeenCalledTimes(1);
         expect(toCall).toHaveBeenCalledWith(1, 2, 3);
         expect(calledContext).toBe(4);
@@ -91,7 +91,7 @@ describe('call and apply', () => {
             yield call([context, 'toCall'], 1, 2, 3);
         }
 
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         expect(toCall).toHaveBeenCalledTimes(1);
         expect(toCall).toHaveBeenCalledWith(1, 2, 3);
         expect(calledContext).toBe(context);

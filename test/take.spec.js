@@ -1,19 +1,19 @@
 import { createStore, applyMiddleware } from 'redux';
-import createSagaMiddleware from '../src';
+import createTaleMiddleware from '../src';
 import { take } from '../src/effects';
 
 describe('take', () => {
 
-    let sagaMiddleware;
+    let taleMiddleware;
     let store;
     let newState;
 
     beforeEach(() => {
-        sagaMiddleware = createSagaMiddleware();
+        taleMiddleware = createTaleMiddleware();
         newState = {};
         store = createStore(
             () => newState,
-            applyMiddleware(sagaMiddleware)
+            applyMiddleware(taleMiddleware)
         );
     });
 
@@ -22,7 +22,7 @@ describe('take', () => {
         function *test() {
             order.push(yield take());
         }
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         const action = {
             type: 1,
         };
@@ -35,7 +35,7 @@ describe('take', () => {
         function *test() {
             order.push(yield take(2));
         }
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         const action = {
             type: 2,
         };
@@ -49,7 +49,7 @@ describe('take', () => {
         function *test() {
             order.push(yield take([1, 2]));
         }
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         const action = {
             type: 2,
         };

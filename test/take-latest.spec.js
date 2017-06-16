@@ -1,20 +1,20 @@
 import { createStore, applyMiddleware } from 'redux';
-import createSagaMiddleware from '../src';
+import createTaleMiddleware from '../src';
 import { takeLatest } from '../src/effects';
 
 describe('take-every', () => {
 
-    let sagaMiddleware;
+    let taleMiddleware;
     let store;
     let newState;
     let onerror;
 
     beforeEach(() => {
-        sagaMiddleware = createSagaMiddleware();
+        taleMiddleware = createTaleMiddleware();
         newState = {};
         store = createStore(
             () => newState,
-            applyMiddleware(sagaMiddleware)
+            applyMiddleware(taleMiddleware)
         );
         onerror = jest.fn();
         window.onerror = onerror;
@@ -32,7 +32,7 @@ describe('take-every', () => {
             order.push(action.order);
         }
 
-        sagaMiddleware.run(takeLatest(1, latest));
+        taleMiddleware.run(takeLatest(1, latest));
         store.dispatch({
             type: 1,
             order: 1,
@@ -53,7 +53,7 @@ describe('take-every', () => {
             throw exception;
         }
 
-        sagaMiddleware.run(takeLatest('*', latest));
+        taleMiddleware.run(takeLatest('*', latest));
         store.dispatch({
             type: 1,
         });

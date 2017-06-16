@@ -1,20 +1,20 @@
 import { createStore, applyMiddleware } from 'redux';
-import createSagaMiddleware from '../src';
+import createTaleMiddleware from '../src';
 import { takeEvery } from '../src/effects';
 
 describe('take-every', () => {
 
-    let sagaMiddleware;
+    let taleMiddleware;
     let store;
     let newState;
     let onerror;
 
     beforeEach(() => {
-        sagaMiddleware = createSagaMiddleware();
+        taleMiddleware = createTaleMiddleware();
         newState = {};
         store = createStore(
             () => newState,
-            applyMiddleware(sagaMiddleware)
+            applyMiddleware(taleMiddleware)
         );
         onerror = jest.fn();
         window.onerror = onerror;
@@ -31,7 +31,7 @@ describe('take-every', () => {
             order.push(action);
         }
 
-        sagaMiddleware.run(takeEvery(1, every));
+        taleMiddleware.run(takeEvery(1, every));
         const action = {
             type: 1,
             extra: true,
@@ -49,7 +49,7 @@ describe('take-every', () => {
             order.push(args);
         }
 
-        sagaMiddleware.run(takeEvery(1, every, 2, 3));
+        taleMiddleware.run(takeEvery(1, every, 2, 3));
         store.dispatch({
             type: 1,
         });
@@ -72,7 +72,7 @@ describe('take-every', () => {
             order.push(args);
         }
 
-        sagaMiddleware.run(takeEvery(1, every, 2, 3));
+        taleMiddleware.run(takeEvery(1, every, 2, 3));
         store.dispatch({
             type: 1,
         });
@@ -96,7 +96,7 @@ describe('take-every', () => {
             order.push(action.order);
         }
 
-        sagaMiddleware.run(takeEvery(1, every));
+        taleMiddleware.run(takeEvery(1, every));
         store.dispatch({
             type: 1,
             order: 1,
@@ -117,7 +117,7 @@ describe('take-every', () => {
             order.push(args);
         }
 
-        sagaMiddleware.run(takeEvery(1, every, 2, 3));
+        taleMiddleware.run(takeEvery(1, every, 2, 3));
         store.dispatch({
             type: 1,
         });
@@ -138,7 +138,7 @@ describe('take-every', () => {
             throw exception;
         }
 
-        sagaMiddleware.run(takeEvery('*', every));
+        taleMiddleware.run(takeEvery('*', every));
         store.dispatch({
             type: 1,
         });
@@ -157,7 +157,7 @@ describe('take-every', () => {
             order.push(action);
         }
 
-        sagaMiddleware.run(takeEvery('*', every));
+        taleMiddleware.run(takeEvery('*', every));
         const action = {
             type: 1,
             extra: true,
@@ -174,7 +174,7 @@ describe('take-every', () => {
             order.push(action);
         }
 
-        sagaMiddleware.run(takeEvery((action) => action.extra, every));
+        taleMiddleware.run(takeEvery((action) => action.extra, every));
         const action = {
             type: 1,
             extra: true,

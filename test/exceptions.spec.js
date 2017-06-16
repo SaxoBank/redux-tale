@@ -1,17 +1,17 @@
 import { createStore, applyMiddleware } from 'redux';
-import createSagaMiddleware from '../src';
+import createTaleMiddleware from '../src';
 
 describe('exceptions', () => {
 
-    let sagaMiddleware;
+    let taleMiddleware;
     let newState;
 
     beforeEach(() => {
-        sagaMiddleware = createSagaMiddleware();
+        taleMiddleware = createTaleMiddleware();
         newState = {};
         createStore(
             () => newState,
-            applyMiddleware(sagaMiddleware)
+            applyMiddleware(taleMiddleware)
         );
     });
 
@@ -24,7 +24,7 @@ describe('exceptions', () => {
                 order.push(e);
             }
         }
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         jest.runAllTimers();
         expect(order).toEqual([1]);
     });
@@ -40,7 +40,7 @@ describe('exceptions', () => {
                 order.push(e);
             }
         }
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         jest.runAllTimers();
         expect(order).toEqual([1]);
     });
@@ -56,7 +56,7 @@ describe('exceptions', () => {
                 order.push(e);
             }
         }
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         jest.runAllTimers();
         expect(order).toEqual([1]);
     });
@@ -74,7 +74,7 @@ describe('exceptions', () => {
                 order.push(e);
             }
         }
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         jest.runAllTimers();
         expect(order).toEqual([1]);
     });
@@ -92,7 +92,7 @@ describe('exceptions', () => {
                 order.push(e);
             }
         }
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         jest.runAllTimers();
         expect(order).toEqual([1]);
     });

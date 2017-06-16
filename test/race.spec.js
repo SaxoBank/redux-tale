@@ -1,18 +1,18 @@
 import { createStore, applyMiddleware } from 'redux';
-import createSagaMiddleware, { delay } from '../src';
+import createTaleMiddleware, { delay } from '../src';
 import { race, call } from '../src/effects';
 
 describe('race', () => {
 
-    let sagaMiddleware;
+    let taleMiddleware;
     let newState;
 
     beforeEach(() => {
-        sagaMiddleware = createSagaMiddleware();
+        taleMiddleware = createTaleMiddleware();
         newState = {};
         createStore(
             () => newState,
-            applyMiddleware(sagaMiddleware)
+            applyMiddleware(taleMiddleware)
         );
     });
 
@@ -24,7 +24,7 @@ describe('race', () => {
                 neverEndRunner: new Promise(() => {}),
             });
         }
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         jest.runAllTimers();
         expect(raceValue).toEqual({
             delayRunner: 2,
@@ -41,7 +41,7 @@ describe('race', () => {
                 }),
             });
         }
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         expect(raceValue).toEqual({
             runner: 3,
         });
@@ -61,7 +61,7 @@ describe('race', () => {
                 }),
             });
         }
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         expect(raceValue).toEqual({
             runner1: 1,
         });
@@ -84,7 +84,7 @@ describe('race', () => {
                 }),
             });
         }
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         jest.runAllTimers();
         jest.runAllTimers();
         expect(raceValue).toEqual({
@@ -110,7 +110,7 @@ describe('race', () => {
                 raceValue = e;
             }
         }
-        sagaMiddleware.run(test);
+        taleMiddleware.run(test);
         jest.runAllTimers();
         expect(raceValue).toEqual({
             runner1: 3,
