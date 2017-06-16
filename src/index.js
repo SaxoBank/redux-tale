@@ -124,6 +124,62 @@ function createSagaRunner({ dispatch, getState }) {
         };
     }
 
+    function resolveEffect(value, task, makeCallback, callbackArg) {
+        if (value.__reduxTaleType === effects.TAKE) {
+            take(value.pattern, makeCallback(task, callbackArg));
+            return false;
+        }
+
+        if (value.__reduxTaleType === effects.SPAWN) {
+            return { value: runGenObj(value.worker(...value.args)) };
+        }
+
+        if (value.__reduxTaleType === effects.SELECT) {
+            const state = getState();
+            if (value.selector) {
+                return { value: value.selector(state, ...value.args) };
+            }
+            return { value: state };
+        }
+
+        if (value.__reduxTaleType === effects.PUT) {
+            return { value: dispatch(value.action) };
+        }
+
+        if (value.__reduxTaleType === effects.CALL) {
+            // TODO - in redux-saga, does doing
+            // call(returnsArrayOfPromises) => arrayOfValues ?
+            return resolveValue(value.func.apply(value.context, value.args), task, makeCallback, callbackArg);
+        }
+
+        if (value.__reduxTaleType === effects.RACE) {
+
+            const raceTasks = {};
+            for (const key in value.raceMap) {
+                const raceEffect = value.raceMap[key];
+                const raceTask = runGenObj(raceWorker(raceEffect));
+                raceTasks[key] = raceTask;
+                if (raceTask.done) {
+                    return {
+                        value: createRaceResult(raceTasks, key, raceTasks[key]),
+                    };
+                }
+            }
+
+            const taskCallback = makeCallback(task, callbackArg);
+            for (const key in raceTasks) {
+                raceTasks[key].callback = (isThrown) => {
+                    const result = createRaceResult(raceTasks, key, raceTasks[key]);
+                    taskCallback(isThrown, result);
+                };
+            }
+
+            return false;
+        }
+
+        throw new Error('unrecognised redux tale effect');
+    }
+
     function resolveValue(value, task, makeCallback = makeTaskCallback, callbackArg) {
 
         if (!value) {
@@ -139,62 +195,9 @@ function createSagaRunner({ dispatch, getState }) {
             return false;
         }
 
-        // is a generator action
+        // is a redux-tale effect
         if (value.__reduxTaleType) {
-
-            if (value.__reduxTaleType === effects.TAKE) {
-                take(value.pattern, makeCallback(task, callbackArg));
-                return false;
-            }
-
-            if (value.__reduxTaleType === effects.SPAWN) {
-                return { value: runGenObj(value.worker(...value.args)) };
-            }
-
-            if (value.__reduxTaleType === effects.SELECT) {
-                const state = getState();
-                if (value.selector) {
-                    return { value: value.selector(state, ...value.args) };
-                }
-                return { value: state };
-            }
-
-            if (value.__reduxTaleType === effects.PUT) {
-                return { value: dispatch(value.action) };
-            }
-
-            if (value.__reduxTaleType === effects.CALL) {
-                // TODO - in redux-saga, does doing
-                // call(returnsArrayOfPromises) => arrayOfValues ?
-                return resolveValue(value.func.apply(value.context, value.args), task, makeCallback, callbackArg);
-            }
-
-            if (value.__reduxTaleType === effects.RACE) {
-
-                const raceTasks = {};
-                for (const key in value.raceMap) {
-                    const raceEffect = value.raceMap[key];
-                    const raceTask = runGenObj(raceWorker(raceEffect));
-                    raceTasks[key] = raceTask;
-                    if (raceTask.done) {
-                        return {
-                            value: createRaceResult(raceTasks, key, raceTasks[key])
-                        };
-                    }
-                }
-
-                const taskCallback = makeCallback(task, callbackArg);
-                for(const key in raceTasks) {
-                    raceTasks[key].callback = (isThrown) => {
-                        const result = createRaceResult(raceTasks, key, raceTasks[key]);
-                        taskCallback(isThrown, result);
-                    };
-                }
-
-                return false;
-            }
-
-            throw new Error('unrecognised redux tale effect');
+            return resolveEffect(value, task, makeCallback, callbackArg);
         }
 
         // is generator

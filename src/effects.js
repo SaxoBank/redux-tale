@@ -62,8 +62,8 @@ export function takeEvery(pattern, worker, ...args) {
 
 export function takeLatest(pattern, worker, ...args) {
     return function* () {
-        // eslint-disable-next-line no-constant-condition
         let task;
+        // eslint-disable-next-line no-constant-condition
         while (true) {
             if (task && !task.done) {
                 task.cancel();
