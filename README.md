@@ -1,6 +1,6 @@
 # redux-tale
 
-[![Build Status](https://travis-ci.org/SaxoBank/redux-tale.svg?branch=master)](https://travis-ci.org/SaxoBank/redux-tale)
+[![Build Status](https://travis-ci.org/SaxoBank/redux-tale.svg?branch=master)](https://travis-ci.org/SaxoBank/redux-tale) [![Coverage Status](https://coveralls.io/repos/github/SaxoBank/redux-tale/badge.svg?branch=master)](https://coveralls.io/github/SaxoBank/redux-tale?branch=master)
 
 A simplified, smaller and synchronous-first re-implementation of redux-saga.
 
@@ -11,7 +11,7 @@ redux-saga is a great library that brings the full power of sagas to redux. We r
 This library is largely compatible with redux-saga but with a few differences:
 
 * Everything is sync-first. This means that "put" or redux dispatch happens immediately. It also means that a saga will run until it hits an async yield meaning that two synchronous running sagas will never interleave. This solves a few problems where using redux-saga you have to work-around sagas essentially making JavaScript multi-threaded. By being sync-first it is easier to predict cause and effect and optimize performance.
-* This library is much smaller and contains a few less effects and functionality (minified it is approx. 22% smaller)
+* This library is much smaller and contains a few less effects and functionality (minified it is approx. 22% of the size)
 
 # Setup
 
