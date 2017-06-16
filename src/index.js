@@ -1,4 +1,6 @@
 import * as effects from './effects';
+import { getPatternChecker } from './pattern-checker';
+import Task from './task';
 
 export { effects };
 
@@ -9,62 +11,6 @@ export function delay(ms, value) {
         }, ms);
     });
 }
-
-function testPatternArray(patterns, action) {
-    for (let i = 0; i < patterns.length; i++) {
-        if (action.type === patterns[i]) {
-            return true;
-        }
-    }
-    return false;
-}
-
-function testPatternEqual(pattern, action) {
-    return pattern === action.type;
-}
-
-function functionPatternChecker(pattern, action) {
-    return pattern(action);
-}
-
-function truthy() {
-    return true;
-}
-
-function getPatternChecker(pattern) {
-    if (!pattern || pattern === '*') {
-        return truthy;
-    }
-    if (Array.isArray(pattern)) {
-        return testPatternArray;
-    }
-    if (typeof pattern === 'function') {
-        return functionPatternChecker;
-    }
-    return testPatternEqual;
-}
-
-function Task(genObj) {
-    this.genObj = genObj;
-}
-Task.prototype = {
-    cancelled: false,
-    done: false,
-    thrown: false,
-    value: undefined,
-    callback: null,
-    valuesLeft: 0,
-    isRunning() {
-        return !this.done;
-    },
-    cancel() {
-        this.cancelled = true;
-        this.done = true;
-        if (this.child) {
-            this.child.cancel();
-        }
-    },
-};
 
 function createRaceResult(otherTasks, finishedKey, finishedTask) {
     for (const key in otherTasks) {
