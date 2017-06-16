@@ -34,6 +34,12 @@ taleMiddleware.run(saga);
 
 # API
 
+## Delay
+
+## createTaleMiddleware
+
+## Effects
+
 ### Apply
 ### Call
 ### Put
@@ -43,6 +49,7 @@ taleMiddleware.run(saga);
 ### Take
 ### Take Every
 ### Take Latest
+
 
 # Contributing
 You want to contribute? Great! Have a look at our [contribution guidelines](CONTRIBUTING.md).

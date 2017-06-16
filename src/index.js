@@ -1,31 +1,19 @@
 import * as effects from './effects';
 import { getPatternChecker } from './pattern-checker';
 import Task from './task';
+import delay from './delay';
+import { handleRaceEffect } from './race';
 
 export { effects };
+export { delay };
 
-export function delay(ms, value) {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(value);
-        }, ms);
-    });
-}
-
-function createRaceResult(otherTasks, finishedKey, finishedTask) {
-    for (const key in otherTasks) {
-        if (key !== finishedKey) {
-            otherTasks[key].cancel();
-        }
-    }
-    return { [finishedKey]: finishedTask.value };
-}
-
-function* raceWorker(effect) {
-    return yield effect;
-}
-
-function createSagaRunner({ dispatch, getState }) {
+/**
+ * Creates a runner that can run the tales
+ * @param dispatch
+ * @param getState
+ * @returns { emit(action), run(tale) }
+ */
+function createTaleRunner({ dispatch, getState }) {
     const listeners = [];
 
     function take(pattern, callback) {
@@ -99,28 +87,7 @@ function createSagaRunner({ dispatch, getState }) {
         }
 
         if (value.__reduxTaleType === effects.RACE) {
-
-            const raceTasks = {};
-            for (const key in value.raceMap) {
-                const raceEffect = value.raceMap[key];
-                const raceTask = runGenObj(raceWorker(raceEffect));
-                raceTasks[key] = raceTask;
-                if (raceTask.done) {
-                    return {
-                        value: createRaceResult(raceTasks, key, raceTasks[key]),
-                    };
-                }
-            }
-
-            const taskCallback = makeCallback(task, callbackArg);
-            for (const key in raceTasks) {
-                raceTasks[key].callback = (isThrown) => {
-                    const result = createRaceResult(raceTasks, key, raceTasks[key]);
-                    taskCallback(isThrown, result);
-                };
-            }
-
-            return false;
+            return handleRaceEffect(value, task, runGenObj, makeCallback, callbackArg);
         }
 
         throw new Error('unrecognised redux tale effect');
@@ -250,11 +217,17 @@ function createSagaRunner({ dispatch, getState }) {
     };
 }
 
-export default function createSagaMiddleware() {
+/**
+ * The redux middleware which is inserted to catch actions and give dispatch (put) and getState (select) capability
+ * @param dispatch
+ * @param getState
+ * @returns tale enabled redux
+ */
+export default function createTaleMiddleware() {
     let sagaRunner;
     function sagaMiddleware({ dispatch, getState }) {
 
-        sagaRunner = createSagaRunner({ dispatch, getState });
+        sagaRunner = createTaleRunner({ dispatch, getState });
         sagaMiddleware.run = sagaRunner.run;
 
         return (nextDispatch) => (action) => {
