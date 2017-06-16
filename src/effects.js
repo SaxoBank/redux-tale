@@ -65,10 +65,10 @@ export function takeLatest(pattern, worker, ...args) {
         let task;
         // eslint-disable-next-line no-constant-condition
         while (true) {
+            const action = yield take(pattern);
             if (task && !task.done) {
                 task.cancel();
             }
-            const action = yield take(pattern);
             task = yield spawn(worker, action, ...args);
             if (task.done) {
                 onTaskCatchError(task.thrown, task.value);
