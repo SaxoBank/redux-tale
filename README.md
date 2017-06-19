@@ -13,6 +13,10 @@ This library is largely compatible with redux-saga but with a few differences:
 * Everything is sync-first. This means that "put" or redux dispatch happens immediately. It also means that a saga will run until it hits an async yield meaning that two synchronous running sagas will never interleave. This solves a few problems where using redux-saga you have to work-around sagas essentially making JavaScript multi-threaded. By being sync-first it is easier to predict cause and effect and optimize performance.
 * This library is much smaller and contains a few less effects and functionality (minified it is approx. 22% of the size)
 
+# Gotchas
+
+* if a take every listens for an action type 'a' and when it is processing the action, it also fires an action type 'a', then the take every will miss the action. This could be solved by us queuing these actions for after the take-every runs, but it we consider it an edge case.
+
 # Setup
 
 ```

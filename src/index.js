@@ -1,8 +1,8 @@
 import * as effects from './effects';
-import { getPatternChecker } from './pattern-checker';
 import Task from './task';
 import delay from './delay';
 import { handleRaceEffect } from './race';
+import { makeActionEmitter } from './action-emitter';
 
 export { effects };
 export { delay };
@@ -14,19 +14,19 @@ export { delay };
  * @returns { emit(action), run(tale) }
  */
 function createTaleRunner({ dispatch, getState }) {
-    const listeners = [];
 
-    function take(pattern, callback) {
-        const patternChecker = getPatternChecker(pattern);
-        const handler = (action) => {
-            if (patternChecker(pattern, action)) {
-                callback(false, action);
-                return true;
-            }
-        };
-        listeners.push(handler);
+    const actionEmitter = makeActionEmitter();
+
+    function runGenObj(genObj) {
+        return runTask(new Task(genObj));
     }
 
+    /**
+     * Makes a callback that when called will continue the generator task with the value or exception
+     * This is used lazily so we only create the closure when we know it is needed.
+     * @param task
+     * @returns callback function
+     */
     function makeTaskCallback(task) {
         return (isThrown, value) => {
             if (task.cancelled) {
@@ -36,10 +36,13 @@ function createTaleRunner({ dispatch, getState }) {
         };
     }
 
-    function runGenObj(genObj) {
-        return runTask(new Task(genObj));
-    }
-
+    /**
+     * Makes a callback that will continue the task when all of the items in an array have concluded
+     * (e.g. kind of like Promise.all)
+     * @param task
+     * @param valueIndex
+     * @returns callback function
+     */
     function makeArrayCallback(task, valueIndex) {
         return (isThrown, value) => {
             // if one item already finished, ignore this
@@ -60,7 +63,7 @@ function createTaleRunner({ dispatch, getState }) {
 
     function resolveEffect(value, task, makeCallback, callbackArg) {
         if (value.__reduxTaleType === effects.TAKE) {
-            take(value.pattern, makeCallback(task, callbackArg));
+            actionEmitter.take(value.pattern, makeCallback(task, callbackArg));
             return false;
         }
 
@@ -203,14 +206,7 @@ function createTaleRunner({ dispatch, getState }) {
     }
 
     return {
-        emit(action) {
-            const thisActionListeners = listeners.slice(0);
-            for (let i = 0; i < thisActionListeners.length; i++) {
-                if (thisActionListeners[i](action)) {
-                    listeners.splice(listeners.indexOf(thisActionListeners[i]), 1);
-                }
-            }
-        },
+        emit: actionEmitter.emit,
         run(generator) {
             return runGenObj(generator());
         },
