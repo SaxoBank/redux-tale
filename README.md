@@ -23,7 +23,7 @@ This library is largely compatible with redux-saga but with a few differences:
 import { createStore, applyMiddleware } from 'redux';
 import createTaleMiddleware from 'redux-tale';
 import reducer from './reducer';
-import saga from './saga';
+import tale from './tale';
 
 // create the saga middleware
 const taleMiddleware = createTaleMiddleware();
@@ -33,27 +33,58 @@ const store = createStore(
   applyMiddleware(taleMiddleware)
 )
 
-taleMiddleware.run(saga);
+taleMiddleware.run(tale);
 ```
 
 # API
 
-## Delay
-
 ## createTaleMiddleware
+
+Creates middleware which can be added to the store and used to run tales. See Setup guide above.
+
+## delay
+
+A function that returns a promise which resolves after a certain number of ms.
+
+```javascript
+import { delay } from 'redux-tale';
+
+...
+
+function *delayedEffect(value) {
+
+    // delay and return to function in 100ms
+    yield delay(100);
+
+    // delay and return to function in 100ms with value. Note result === value.
+    const result = yield delay(100, value);
+}
+```
 
 ## Effects
 
-### Apply
-### Call
-### Put
-### Race
-### Select
-### Spawn
-### Take
-### Take Every
-### Take Latest
+### apply
 
+Apply is present for compatibility with redux-saga. In redux-saga it is used for two purposes, firstly to allow yielding to other sagas, which does not happen in redux-tale and secondly for testing when you run the generator and assert every result. We do not recommend this type of testing because you end up asserting what the code is, not what the code does.
+
+```javascript
+// call func with this context and arguments. If the result is a promise or executed generator, the yield will wait for that result to resolve and return its result
+const result = yield apply(context, func, [arg1, arg2]);
+```
+
+### call
+
+Like apply, call is present for compat
+
+### put
+### race
+### select
+### spawn
+### take
+### takeEvery
+### takeLatest
+
+# Testing
 
 # Contributing
 You want to contribute? Great! Have a look at our [contribution guidelines](CONTRIBUTING.md).
