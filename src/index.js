@@ -84,8 +84,6 @@ function createTaleRunner({ dispatch, getState }) {
         }
 
         if (value.__reduxTaleType === effects.CALL) {
-            // TODO - in redux-saga, does doing
-            // call(returnsArrayOfPromises) => arrayOfValues ?
             return resolveValue(value.func.apply(value.context, value.args), task, makeCallback, callbackArg);
         }
 
