@@ -205,8 +205,8 @@ function createTaleRunner({ dispatch, getState }) {
 
     return {
         emit: actionEmitter.emit,
-        run(generator) {
-            return runGenObj(generator());
+        run(generator, ...args) {
+            return runGenObj(generator(...args));
         },
     };
 }
