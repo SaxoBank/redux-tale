@@ -1,3 +1,7 @@
+#### v1.0.3
+
++ Fix problem with takes duplicating
+
 #### v1.0.2
 
 + Fix event emitter - in some cases it was firing multiple emits
