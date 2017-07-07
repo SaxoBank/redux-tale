@@ -5,23 +5,17 @@ import { getPatternChecker } from './pattern-checker';
  * @returns {{listen: (function), emit: (function)}}
  */
 export function makeActionEmitter() {
-    let listeners = [];
+    const listeners = [];
     return {
         take(pattern, callback) {
-            listeners = listeners.concat([{
+            listeners.push({
                 pattern,
                 patternChecker: getPatternChecker(pattern),
                 callback,
-            }]);
+            });
         },
         emit(action) {
-            /*
-             * Don't mutate listeners unless we have to.
-             * If new listeners are added, they go on the end, so because we cache the length they will be skipped
-             * If listeners are removed, its only done here, so we copy the array so we point to the unmutated array.
-             * If listeners are removed and added, the array will have been copied.
-             */
-            const iteratingListeners = listeners;
+            const iteratingListeners = listeners.slice(0);
             const iteratingLength = iteratingListeners.length;
             for (let i = 0; i < iteratingLength; i++) {
                 const listener = iteratingListeners[i];
@@ -31,8 +25,8 @@ export function makeActionEmitter() {
                 // an action that would try and restart the saga
                 if (isValid) {
                     for (let j = 0; j < listeners.length; j++) {
-                        if (listeners[j] === listener) {
-                            listeners = [...listeners.slice(0, j), ...listeners.slice(j + 1)];
+                        if (listener === listeners[j]) {
+                            listeners.splice(j, 1);
                             break;
                         }
                     }
