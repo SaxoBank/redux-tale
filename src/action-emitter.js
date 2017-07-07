@@ -5,14 +5,14 @@ import { getPatternChecker } from './pattern-checker';
  * @returns {{listen: (function), emit: (function)}}
  */
 export function makeActionEmitter() {
-    const listeners = [];
+    let listeners = [];
     return {
         take(pattern, callback) {
-            listeners.push({
+            listeners = listeners.concat([{
                 pattern,
                 patternChecker: getPatternChecker(pattern),
                 callback,
-            });
+            }]);
         },
         emit(action) {
             /*
@@ -21,7 +21,7 @@ export function makeActionEmitter() {
              * If listeners are removed, its only done here, so we copy the array so we point to the unmutated array.
              * If listeners are removed and added, the array will have been copied.
              */
-            let iteratingListeners = listeners;
+            const iteratingListeners = listeners;
             const iteratingLength = iteratingListeners.length;
             for (let i = 0; i < iteratingLength; i++) {
                 const listener = iteratingListeners[i];
@@ -30,12 +30,9 @@ export function makeActionEmitter() {
                 // remove the listener first to avoid the callback firing
                 // an action that would try and restart the saga
                 if (isValid) {
-                    if (iteratingListeners === listeners) {
-                        iteratingListeners = listeners.slice(0);
-                    }
                     for (let j = 0; j < listeners.length; j++) {
-                        if (listeners[j] === iteratingListeners[i]) {
-                            listeners.splice(j, 1);
+                        if (listeners[j] === listener) {
+                            listeners = [...listeners.slice(0, j), ...listeners.slice(j + 1)];
                             break;
                         }
                     }
