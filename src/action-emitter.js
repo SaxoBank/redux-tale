@@ -15,25 +15,33 @@ export function makeActionEmitter() {
             });
         },
         emit(action) {
-            const iteratingListeners = listeners.slice(0);
-            const iteratingLength = iteratingListeners.length;
-            for (let i = 0; i < iteratingLength; i++) {
-                const listener = iteratingListeners[i];
+            const listenersToFire = [];
+            for (let i = 0; i < listeners.length; i++) {
+                const listener = listeners[i];
                 const isValid = listener.patternChecker(listener.pattern, action);
 
                 // remove the listener first to avoid the callback firing
                 // an action that would try and restart the saga
                 if (isValid) {
+                    listenersToFire.push(listener);
                     for (let j = 0; j < listeners.length; j++) {
                         if (listener === listeners[j]) {
                             listeners.splice(j, 1);
+                            i--;
                             break;
                         }
                     }
-
-                    // callback follow redux-tale callback format isThrown, value
-                    iteratingListeners[i].callback(false, action);
                 }
+            }
+
+            // delay firing listeners until the listeners have all been removed
+            // this means that if an action is taken by two sagas and one of those
+            // sagas emits an action taken by the 2nd saga, it will not pick it up
+            // since it will process the previous action *afterwards*
+            for (let i = 0; i < listenersToFire.length; i++) {
+
+                // callback follow redux-tale callback format isThrown, value
+                listenersToFire[i].callback(false, action);
             }
         },
     };

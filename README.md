@@ -38,7 +38,8 @@ Why not use thunks? Thunks are simple and might be better suited to your applica
 
 # Gotchas
 
-* if a take every listens for an action type 'a' and when it is processing the action, it also fires an action type 'a', then the take every will miss the action. This could be solved by us queuing these actions for after the take-every runs, but it we consider it an edge case.
+* If a saga takes an action and emits an action synchronously that itself is matching, it does not trigger the saga to run recursively
+* If two sagas take the same action and the first saga emits an action that would also be matched by the second, then the second action is ignored and the second saga runs only once
 
 # Setup
 
