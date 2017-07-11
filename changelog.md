@@ -1,3 +1,7 @@
+#### v1.0.4
+
++ Fix a problem where an absorbed exception was rethrown
+
 #### v1.0.3
 
 + Fix problem with takes duplicating
