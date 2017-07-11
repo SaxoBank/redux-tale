@@ -29,6 +29,21 @@ describe('exceptions', () => {
         expect(order).toEqual([1]);
     });
 
+    it('continues to work after absorbing an exception', () => {
+        const order = [];
+        function *test() {
+            try {
+                yield Promise.reject(1);
+            } catch (e) {
+                order.push(e);
+            }
+            order.push(2);
+        }
+        taleMiddleware.run(test);
+        jest.runAllTimers();
+        expect(order).toEqual([1, 2]);
+    });
+
     it('handles rejected generators', () => {
         const order = [];
         function *test() {
@@ -39,10 +54,11 @@ describe('exceptions', () => {
             } catch (e) {
                 order.push(e);
             }
+            order.push(2);
         }
         taleMiddleware.run(test);
         jest.runAllTimers();
-        expect(order).toEqual([1]);
+        expect(order).toEqual([1, 2]);
     });
 
     it('handles a generator yielding a rejected promise', () => {
@@ -55,10 +71,28 @@ describe('exceptions', () => {
             } catch (e) {
                 order.push(e);
             }
+            order.push(2);
         }
         taleMiddleware.run(test);
         jest.runAllTimers();
-        expect(order).toEqual([1]);
+        expect(order).toEqual([1, 2]);
+    });
+
+    it('handles a generator yielding a rejected promise with a yield in the catch', () => {
+        const order = [];
+        function *test() {
+            try {
+                yield (function *() {
+                    yield Promise.reject(1);
+                })();
+            } catch (e) {
+                order.push(yield e);
+            }
+            order.push(yield 2);
+        }
+        taleMiddleware.run(test);
+        jest.runAllTimers();
+        expect(order).toEqual([1, 2]);
     });
 
     it('handles a rejected promise in an array (rejecting first)', () => {

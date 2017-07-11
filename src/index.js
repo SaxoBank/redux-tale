@@ -157,7 +157,7 @@ function createTaleRunner({ dispatch, getState }) {
         return { value };
     }
 
-    function runTask(task, isThrown, value) {
+    function runTask(task, isNextStatementThrown, value) {
 
         // eslint-disable-next-line no-constant-condition
         while (true) {
@@ -165,8 +165,9 @@ function createTaleRunner({ dispatch, getState }) {
             let yielded;
 
             try {
-                if (isThrown) {
+                if (isNextStatementThrown) {
                     yielded = task.genObj.throw(value);
+                    isNextStatementThrown = false;
                 } else {
                     yielded = task.genObj.next(value);
                 }
@@ -190,7 +191,7 @@ function createTaleRunner({ dispatch, getState }) {
                     break;
                 }
                 if (syncResult.thrown) {
-                    isThrown = true;
+                    isNextStatementThrown = true;
                 }
                 value = syncResult.value;
             }
