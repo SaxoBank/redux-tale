@@ -132,7 +132,7 @@ function createTaleRunner({ dispatch, getState }) {
         }
 
         // is array (wait for all)
-        if (value.length) {
+        if (Array.isArray(value) && value.length) {
             const newResult = new Array(value.length);
             const subTask = new Task();
             subTask.value = newResult;
