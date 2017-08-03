@@ -97,4 +97,55 @@ describe('call and apply', () => {
         expect(calledContext).toBe(context);
     });
 
+    it('call yields parameterless function', () => {
+        const func = () => {};
+        const toCall = () => func;
+        let resolvedValue;
+
+        function *test() {
+            resolvedValue = yield call(toCall);
+        }
+
+        taleMiddleware.run(test);
+        expect(resolvedValue).toEqual(func);
+    });
+
+    it('call yields function with parameters', () => {
+        const func = (a) => {};
+        const toCall = () => func;
+        let resolvedValue;
+
+        function *test() {
+            resolvedValue = yield call(toCall);
+        }
+
+        taleMiddleware.run(test);
+        expect(resolvedValue).toEqual(func);
+    });
+
+    it('call yields empty array', () => {
+        const array = [];
+        const toCall = () => array;
+        let resolvedValue;
+
+        function *test() {
+            resolvedValue = yield call(toCall);
+        }
+
+        taleMiddleware.run(test);
+        expect(resolvedValue).toEqual(array);
+    });
+
+    it('call yields array with values', () => {
+        const array = [1, 2, 3];
+        const toCall = () => array;
+        let resolvedValue;
+
+        function *test() {
+            resolvedValue = yield call(toCall);
+        }
+
+        taleMiddleware.run(test);
+        expect(resolvedValue).toEqual(array);
+    });
 });
