@@ -317,6 +317,10 @@ This field may be set to a function which will be called when the task is comple
 
 Although redux-tale uses this internally, it will be unset on top level tasks returned from spawn and middleware.run, meaning the caller of those functions is free to use this.
 
+### whenDone - promise
+
+A helper method that uses the `callback` to return a promise that completes when the task is done. It gets the task as a resolved argument and gets resolved on failure or success.
+
 ### thrown - boolean
 
 A boolean field for whether or not the task has leaked an exception.

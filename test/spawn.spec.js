@@ -1,3 +1,4 @@
+/* eslint max-nested-callbacks: "off" */
 import { createStore, applyMiddleware } from 'redux';
 import createTaleMiddleware from '../src';
 import { spawn } from '../src/effects';
@@ -30,6 +31,63 @@ describe('spawn', () => {
         taleMiddleware.run(test);
         jest.runAllTimers();
         expect(order).toEqual([[1, 2], [3, 4]]);
+    });
+
+    describe('whenDone', () => {
+        it('works when sync', () => {
+            const order = [];
+            function *test() {
+                const task = yield spawn(function*() {
+                    order.push(1);
+                });
+                task.whenDone().then((resolvedTask) => {
+                    order.push(2);
+                    expect(resolvedTask).toBe(task);
+                });
+            }
+            taleMiddleware.run(test);
+            jest.runAllTimers();
+            expect(order).toEqual([1, 2]);
+        });
+
+        it('works when async', () => {
+            const order = [];
+            function *test() {
+                const task = yield spawn(function*() {
+                    order.push(1);
+                    yield Promise.resolve();
+                    order.push(2);
+                });
+                task.whenDone().then((resolvedTask) => {
+                    order.push(3);
+                    expect(resolvedTask).toBe(task);
+                });
+            }
+            taleMiddleware.run(test);
+            jest.runAllTimers();
+            expect(order).toEqual([1, 2, 3]);
+        });
+
+        it('works when async depending on sub spawn', () => {
+            const order = [];
+            function *test() {
+                function *subAsyncGen() {
+                    return yield Promise.resolve();
+                }
+                const task = yield spawn(function*() {
+                    order.push(1);
+                    yield subAsyncGen();
+                    order.push(2);
+                });
+                task.whenDone().then((resolvedTask) => {
+                    order.push(3);
+                    expect(resolvedTask).toBe(task);
+                });
+            }
+            taleMiddleware.run(test);
+            jest.runAllTimers();
+            expect(order).toEqual([1, 2, 3]);
+        });
     });
 
     it('spawned tasks throwing have no effect on the parent', () => {

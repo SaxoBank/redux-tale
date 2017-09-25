@@ -12,6 +12,17 @@ Task.prototype = {
     isRunning() {
         return !this.done;
     },
+    whenDone() {
+        if (this.done) {
+            return Promise.resolve(this);
+        }
+
+        return new Promise((resolve) => {
+            this.callback = () => {
+                resolve(this);
+            };
+        });
+    },
     cancel() {
         this.cancelled = true;
         this.done = true;
