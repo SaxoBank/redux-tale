@@ -1,3 +1,7 @@
+#### v1.1.0
+
++ Add a whenDone function on a task that returns a promise when the task completes
+
 #### v1.0.5
 
 + Fix yielding a function with parameters
