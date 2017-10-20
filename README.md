@@ -15,7 +15,7 @@ This library is largely compatible with redux-saga but with a few differences:
 
 # Introduction
 
-If you are not familiar with redux-saga, whose API we are compatible with, the idea is this. In order for actions to have side-effects, you can setup a tale (or in redux-saga, a saga) which will run for every action matching certain criteria (take-every). The tale itself is an es2015 generator function and cal yield a number of effects or promises or other generators. The middleware processes those yields and only returns when it is finished. This means you can write code that upon every action that is fired, make a network fetch and then fire an action when complete. e.g.
+If you are not familiar with redux-saga, whose API we are compatible with, the idea is this. In order for actions to have side-effects, you can setup a tale (or in redux-saga, a saga) which will run for every action matching certain criteria (take-every). The tale itself is an es2015 generator function and can yield a number of effects or promises or other generators. The middleware processes those yields and only returns when it is finished. This means you can write code that upon every action that is fired, make a network fetch and then fire an action when complete. e.g.
 
 ```js
 <button onClick={dispatch(actions.triggerFetch())} >
@@ -34,7 +34,7 @@ Why not use thunks? Thunks are simple and might be better suited to your applica
 
 * More control over your side effects. For instance you can use take-latest to cancel an existing take operation in progress. You can use take to pause until a action is fired. These would be difficult to achieve with thunks.
 * It can keep your actions simple and boilerplate and move side-effects to a seperate file.
-* The middleware is just triggered by actions, meaning if you have a store multi-window, you can run the side-effects in a different window as it only relies on listening to pure actions.
+* The middleware is just triggered by actions, meaning if you have a store in multi-windows, you can run the side-effects in a different window as it only relies on listening to pure actions.
 
 # Gotchas
 
