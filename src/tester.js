@@ -81,8 +81,11 @@ export default class SagaIntegrationTester {
         return this.sagaMiddleware.run(sagas, ...args);
     }
 
-    reset(clearActionList = false) {
-        this.store.dispatch(resetAction);
+    reset(clearActionList = false, clearState = true) {
+        if (clearState) {
+            this.store.dispatch(resetAction);
+        }
+
         if (clearActionList) {
             // Clear existing array in case there are other references to it
             this.calledActions.length = 0;
