@@ -1,3 +1,7 @@
+#### v1.1.1
+
++ Tiny performance improvements
+
 #### v1.1.0
 
 + Add a whenDone function on a task that returns a promise when the task completes
