@@ -24,13 +24,8 @@ export function makeActionEmitter() {
                 // an action that would try and restart the saga
                 if (isValid) {
                     listenersToFire.push(listener);
-                    for (let j = 0; j < listeners.length; j++) {
-                        if (listener === listeners[j]) {
-                            listeners.splice(j, 1);
-                            i--;
-                            break;
-                        }
-                    }
+                    listeners.splice(i, 1);
+                    i--;
                 }
             }
 

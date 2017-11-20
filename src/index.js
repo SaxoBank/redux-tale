@@ -94,6 +94,14 @@ function createTaleRunner({ dispatch, getState }) {
         throw new Error('unrecognised redux tale effect');
     }
 
+    /**
+     * Resolves a yielded value to a value or else if async, returns null and call the callback
+     * @param value - the value to resolve
+     * @param task - the task to resolve back to
+     * @param makeCallback - the function to make a callback if async
+     * @param callbackArg - the argument for the callback
+     * @returns null when the result is async. when the result is sync, an object { value, thrown }
+     */
     function resolveValue(value, task, makeCallback = makeTaskCallback, callbackArg) {
 
         if (!value) {
@@ -106,7 +114,7 @@ function createTaleRunner({ dispatch, getState }) {
             value.then(
                 taskCallback.bind(null, false /* isThrown - false = resolved */),
                 taskCallback.bind(null, true));
-            return false;
+            return null;
         }
 
         // is a redux-tale effect
@@ -128,7 +136,7 @@ function createTaleRunner({ dispatch, getState }) {
             task.child = subTask;
 
             subTask.callback = makeCallback(task, callbackArg);
-            return false;
+            return null;
         }
 
         // is array (wait for all)
@@ -150,7 +158,7 @@ function createTaleRunner({ dispatch, getState }) {
             }
             task.child = subTask;
             subTask.callback = makeCallback(task, callbackArg);
-            return false;
+            return null;
         }
 
         // pass through values we cannot interpret
