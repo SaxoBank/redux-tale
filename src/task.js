@@ -1,14 +1,14 @@
 export default function Task(genObj) {
     this.genObj = genObj;
+    this.cancelled = false;
+    this.done = false;
+    this.thrown = false;
+    this.value = undefined;
+    this.callback = null;
+    this.valuesLeft = 0;
 }
 
 Task.prototype = {
-    cancelled: false,
-    done: false,
-    thrown: false,
-    value: undefined,
-    callback: null,
-    valuesLeft: 0,
     isRunning() {
         return !this.done;
     },
