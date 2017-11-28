@@ -212,6 +212,17 @@ const raceResult = yield race({
 
 Note: as with other cancellations, anything inside the promise still continues since JavaScript does not support cancellable promises.
 
+### all
+
+The `all` effect in redux-saga can be simulated by yielding an array.
+
+```js
+const allResult = yield [
+    effect(),
+    delay(2),
+];
+```
+
 ### select
 
 The `select` effect runs a selector against the store state.
