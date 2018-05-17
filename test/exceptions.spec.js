@@ -171,7 +171,7 @@ describe('exceptions', () => {
         expect(onerror).not.toHaveBeenCalled();
         jest.runAllTimers();
         expect(onerror).toHaveBeenCalledWith({
-            message: 'Unhandled exception in tale: {\n\t"a": 1,\n\t"b": 2\n}',
+            message: 'Unhandled exception in tale: {"a":1,"b":2}',
         });
     });
 

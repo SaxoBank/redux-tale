@@ -43,7 +43,7 @@ function getErrorObject(value) {
 
     if (typeof value === 'object') {
         return {
-            message: 'Unhandled exception in tale: ' + JSON.stringify(value, null, '\t'),
+            message: 'Unhandled exception in tale: ' + JSON.stringify(value),
         };
     }
 
