@@ -1,18 +1,23 @@
 import { createStore, applyMiddleware } from 'redux';
 import createTaleMiddleware from '../src';
+import { takeEvery } from '../src/effects';
 
 describe('exceptions', () => {
 
     let taleMiddleware;
     let newState;
+    let store;
+    let onerror;
 
     beforeEach(() => {
         taleMiddleware = createTaleMiddleware();
         newState = {};
-        createStore(
+        store = createStore(
             () => newState,
             applyMiddleware(taleMiddleware)
         );
+        onerror = jest.fn();
+        window.onerror = onerror;
     });
 
     it('handles rejected promises', () => {
@@ -129,5 +134,62 @@ describe('exceptions', () => {
         taleMiddleware.run(test);
         jest.runAllTimers();
         expect(order).toEqual([1]);
+    });
+
+    it('fires exceptions on window for Error', () => {
+        const exception = new Error('an error');
+        function *every() {
+            throw exception;
+        }
+
+        taleMiddleware.run(takeEvery('*', every));
+        store.dispatch({
+            type: 1,
+        });
+        expect(onerror).not.toHaveBeenCalled();
+        jest.runAllTimers();
+        expect(onerror).toHaveBeenCalledWith({
+            message: 'Unhandled exception in tale: Error: an error',
+            stack: exception.stack,
+        });
+    });
+
+    it('fires exceptions on window for objects', () => {
+        const error = {
+            a: 1,
+            b: 2,
+        };
+
+        function *every() {
+            throw error;
+        }
+
+        taleMiddleware.run(takeEvery('*', every));
+        store.dispatch({
+            type: 1,
+        });
+        expect(onerror).not.toHaveBeenCalled();
+        jest.runAllTimers();
+        expect(onerror).toHaveBeenCalledWith({
+            message: 'Unhandled exception in tale: {"a":1,"b":2}',
+        });
+    });
+
+    it('fires exceptions on window for strings', () => {
+        const error = 'error';
+
+        function *every() {
+            throw error;
+        }
+
+        taleMiddleware.run(takeEvery('*', every));
+        store.dispatch({
+            type: 1,
+        });
+        expect(onerror).not.toHaveBeenCalled();
+        jest.runAllTimers();
+        expect(onerror).toHaveBeenCalledWith({
+            message: 'Unhandled exception in tale: error',
+        });
     });
 });
