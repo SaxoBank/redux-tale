@@ -1,3 +1,7 @@
+#### v1.1.2
+
++ Improvements to the onError object
+
 #### v1.1.1
 
 + Tiny performance improvements
