@@ -55,4 +55,23 @@ describe('select', () => {
         taleMiddleware.run(test);
         expect(order).toEqual([1, 2]);
     });
+
+    it('throws if a selector throws', () => {
+        const order = [];
+        let didThrow = false;
+
+        function *test() {
+            try {
+                order.push(yield select((state) => state.a.b.c));
+            } catch (e) {
+                didThrow = true;
+            }
+        }
+
+        newState = { a: 1 };
+        store.dispatch({ type: 'update-state' });
+        taleMiddleware.run(test);
+        expect(order).toEqual([]);
+        expect(didThrow).toBe(true);
+    });
 });

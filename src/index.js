@@ -62,33 +62,40 @@ function createTaleRunner({ dispatch, getState }) {
     }
 
     function resolveEffect(value, task, makeCallback, callbackArg) {
-        if (value.__reduxTaleType === effects.TAKE) {
-            actionEmitter.take(value.pattern, makeCallback(task, callbackArg));
-            return false;
-        }
-
-        if (value.__reduxTaleType === effects.SPAWN) {
-            return { value: runGenObj(value.worker(...value.args)) };
-        }
-
-        if (value.__reduxTaleType === effects.SELECT) {
-            const state = getState();
-            if (value.selector) {
-                return { value: value.selector(state, ...value.args) };
+        try {
+            if (value.__reduxTaleType === effects.TAKE) {
+                actionEmitter.take(value.pattern, makeCallback(task, callbackArg));
+                return false;
             }
-            return { value: state };
-        }
 
-        if (value.__reduxTaleType === effects.PUT) {
-            return { value: dispatch(value.action) };
-        }
+            if (value.__reduxTaleType === effects.SPAWN) {
+                return { value: runGenObj(value.worker(...value.args)) };
+            }
 
-        if (value.__reduxTaleType === effects.CALL) {
-            return resolveValue(value.func.apply(value.context, value.args), task, makeCallback, callbackArg);
-        }
+            if (value.__reduxTaleType === effects.SELECT) {
+                const state = getState();
+                if (value.selector) {
+                    return { value: value.selector(state, ...value.args) };
+                }
+                return { value: state };
+            }
 
-        if (value.__reduxTaleType === effects.RACE) {
-            return handleRaceEffect(value, task, runGenObj, makeCallback, callbackArg);
+            if (value.__reduxTaleType === effects.PUT) {
+                return { value: dispatch(value.action) };
+            }
+
+            if (value.__reduxTaleType === effects.CALL) {
+                return resolveValue(value.func.apply(value.context, value.args), task, makeCallback, callbackArg);
+            }
+
+            if (value.__reduxTaleType === effects.RACE) {
+                return handleRaceEffect(value, task, runGenObj, makeCallback, callbackArg);
+            }
+        } catch (e) {
+            return {
+                thrown: true,
+                value: e,
+            };
         }
 
         throw new Error('unrecognised redux tale effect');
