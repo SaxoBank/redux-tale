@@ -111,4 +111,31 @@ describe('emitter', () => {
         expect(listener1Calls).toEqual(0);
         expect(listener2Calls).toEqual(1);
     });
+
+    it('fires events even when listeners throw', () => {
+
+        const listener1 = jest.fn(() => { throw new Error(); });
+        const listener2 = jest.fn();
+
+        actionEmitter.take('*', listener1);
+        actionEmitter.take('*', listener2);
+
+        let thrownCount = 0;
+        try {
+            actionEmitter.emit(1);
+        } catch (e) {
+            thrownCount++;
+        }
+
+        expect(listener1).toHaveBeenCalledTimes(1);
+        expect(listener1).toHaveBeenLastCalledWith(false, 1);
+        expect(listener2).toHaveBeenCalledTimes(1);
+        expect(listener2).toHaveBeenLastCalledWith(false, 1);
+        expect(thrownCount).toBe(1);
+
+        actionEmitter.emit(2);
+
+        expect(listener1).toHaveBeenCalledTimes(1);
+        expect(listener2).toHaveBeenCalledTimes(1);
+    });
 });
