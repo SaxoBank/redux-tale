@@ -1,4 +1,5 @@
 import { getPatternChecker } from './pattern-checker';
+import { logError } from './log-error';
 
 /**
  * Fires take's when an action matches
@@ -33,18 +34,14 @@ export function makeActionEmitter() {
             // this means that if an action is taken by two sagas and one of those
             // sagas emits an action taken by the 2nd saga, it will not pick it up
             // since it will process the previous action *afterwards*
-            let firstThrown;
             for (let i = 0; i < listenersToFire.length; i++) {
 
                 // callback follow redux-tale callback format isThrown, value
                 try {
                     listenersToFire[i].callback(false, action);
                 } catch (e) {
-                    firstThrown = firstThrown || e;
+                    logError(e);
                 }
-            }
-            if (firstThrown) {
-                throw firstThrown;
             }
         },
     };

@@ -3,9 +3,12 @@ import { makeActionEmitter } from '../src/action-emitter';
 describe('emitter', () => {
 
     let actionEmitter;
+    let onerror;
 
     beforeEach(() => {
         actionEmitter = makeActionEmitter();
+        onerror = jest.fn();
+        window.onerror = onerror;
     });
 
     it('fires events', () => {
@@ -116,26 +119,21 @@ describe('emitter', () => {
 
         const listener1 = jest.fn(() => { throw new Error(); });
         const listener2 = jest.fn();
+        const listener3 = jest.fn(() => { throw new Error(); });
 
         actionEmitter.take('*', listener1);
         actionEmitter.take('*', listener2);
+        actionEmitter.take('*', listener3);
 
-        let thrownCount = 0;
-        try {
-            actionEmitter.emit(1);
-        } catch (e) {
-            thrownCount++;
-        }
+        actionEmitter.emit(1);
+        jest.runAllTimers();
 
         expect(listener1).toHaveBeenCalledTimes(1);
         expect(listener1).toHaveBeenLastCalledWith(false, 1);
         expect(listener2).toHaveBeenCalledTimes(1);
         expect(listener2).toHaveBeenLastCalledWith(false, 1);
-        expect(thrownCount).toBe(1);
-
-        actionEmitter.emit(2);
-
-        expect(listener1).toHaveBeenCalledTimes(1);
-        expect(listener2).toHaveBeenCalledTimes(1);
+        expect(listener3).toHaveBeenCalledTimes(1);
+        expect(listener3).toHaveBeenLastCalledWith(false, 1);
+        expect(onerror).toHaveBeenCalledTimes(2);
     });
 });
