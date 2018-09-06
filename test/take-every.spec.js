@@ -1,6 +1,6 @@
 import { createStore, applyMiddleware } from 'redux';
 import createTaleMiddleware from '../src';
-import { takeEvery } from '../src/effects';
+import { takeEvery, put } from '../src/effects';
 
 describe('take-every', () => {
 
@@ -148,6 +148,60 @@ describe('take-every', () => {
         expect(onerror).toHaveBeenCalledTimes(0);
         jest.runAllTimers();
         expect(onerror).toHaveBeenCalledTimes(2);
+    });
+
+    it('continues after error', () => {
+
+        const order = [];
+        const exception = new Error();
+        function *every(action) {
+            if (action.type === 1) {
+                throw exception;
+            }
+            order.push(action);
+        }
+
+        taleMiddleware.run(takeEvery('*', every));
+        store.dispatch({
+            type: 1,
+        });
+        store.dispatch({
+            type: 2,
+        });
+        expect(onerror).toHaveBeenCalledTimes(0);
+        jest.runAllTimers();
+        expect(onerror).toHaveBeenCalledTimes(1);
+        expect(order).toEqual([{
+            type: 2,
+        }]);
+    });
+
+    it('errors from triggered sagas don\'t bubble', () => {
+
+        const order = [];
+        function *every(action) {
+            yield put({ type: 'fail' });
+            order.push(action);
+        }
+        function *fail() {
+            throw new Error();
+        }
+
+        taleMiddleware.run(takeEvery('*', every));
+        taleMiddleware.run(takeEvery('fail', fail));
+
+        const action1 = {
+            type: 1,
+        };
+        const action2 = {
+            type: 2,
+        };
+
+        store.dispatch(action1);
+        store.dispatch(action2);
+        jest.runAllTimers();
+        expect(onerror).toHaveBeenCalledTimes(2);
+        expect(order).toEqual([action1, action2]);
     });
 
     it('takes *', () => {

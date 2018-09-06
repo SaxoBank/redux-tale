@@ -148,4 +148,20 @@ describe('call and apply', () => {
         taleMiddleware.run(test);
         expect(resolvedValue).toEqual(array);
     });
+
+    it('call throws if callee throws', () => {
+        const toCall = () => { throw new Error(); };
+        let didThrow = false;
+
+        function *test() {
+            try {
+                yield call(toCall);
+            } catch (e) {
+                didThrow = true;
+            }
+        }
+
+        taleMiddleware.run(test);
+        expect(didThrow).toBe(true);
+    });
 });

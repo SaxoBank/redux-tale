@@ -1,4 +1,5 @@
 import { getPatternChecker } from './pattern-checker';
+import { logError } from './log-error';
 
 /**
  * Fires take's when an action matches
@@ -36,7 +37,11 @@ export function makeActionEmitter() {
             for (let i = 0; i < listenersToFire.length; i++) {
 
                 // callback follow redux-tale callback format isThrown, value
-                listenersToFire[i].callback(false, action);
+                try {
+                    listenersToFire[i].callback(false, action);
+                } catch (e) {
+                    logError(e);
+                }
             }
         },
     };
