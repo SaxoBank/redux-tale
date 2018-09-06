@@ -1,3 +1,7 @@
+#### v1.1.3
+
++ Improvements to error handling
+
 #### v1.1.2
 
 + Improvements to the onError object
