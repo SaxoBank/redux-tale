@@ -1,6 +1,10 @@
-#### v1.1.3
+#### v1.1.4
 
 + Improvements to error handling
+
+#### v1.1.3
+
+Incorrectly published release, do not use
 
 #### v1.1.2
 
