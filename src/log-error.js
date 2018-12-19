@@ -19,6 +19,7 @@ function getErrorObject(value) {
 
 export function logError(error) {
     if (window.onerror) {
-        window.onerror(getErrorObject(error));
+        const errObj = getErrorObject(error);
+        window.onerror(errObj.message, '', 0, 0, errObj);
     }
 }
