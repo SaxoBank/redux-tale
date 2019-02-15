@@ -145,8 +145,6 @@ describe('take-every', () => {
         store.dispatch({
             type: 2,
         });
-        expect(onerror).toHaveBeenCalledTimes(0);
-        jest.runAllTimers();
         expect(onerror).toHaveBeenCalledTimes(2);
     });
 
@@ -168,8 +166,6 @@ describe('take-every', () => {
         store.dispatch({
             type: 2,
         });
-        expect(onerror).toHaveBeenCalledTimes(0);
-        jest.runAllTimers();
         expect(onerror).toHaveBeenCalledTimes(1);
         expect(order).toEqual([{
             type: 2,

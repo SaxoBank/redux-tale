@@ -19,9 +19,6 @@ function getErrorObject(value) {
 
 export function logError(error) {
     if (window.onerror) {
-        // set timeout since jasmine doesn't expect window.onerror to be called from its own context
-        setTimeout(() => {
-            window.onerror(getErrorObject(error));
-        });
+        window.onerror(getErrorObject(error));
     }
 }
