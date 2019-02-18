@@ -146,10 +146,16 @@ describe('exceptions', () => {
         store.dispatch({
             type: 1,
         });
-        expect(onerror).toHaveBeenCalledWith({
-            message: 'Unhandled exception in tale: Error: an error',
-            stack: exception.stack,
-        });
+        expect(onerror).toHaveBeenCalledWith(
+            'Unhandled exception in tale: Error: an error',
+            '',
+            0,
+            0,
+            {
+                message: 'Unhandled exception in tale: Error: an error',
+                stack: exception.stack,
+            }
+        );
     });
 
     it('fires exceptions on window for objects', () => {
@@ -166,9 +172,15 @@ describe('exceptions', () => {
         store.dispatch({
             type: 1,
         });
-        expect(onerror).toHaveBeenCalledWith({
-            message: 'Unhandled exception in tale: {"a":1,"b":2}',
-        });
+        expect(onerror).toHaveBeenCalledWith(
+            'Unhandled exception in tale: {"a":1,"b":2}',
+            '',
+            0,
+            0,
+            {
+                message: 'Unhandled exception in tale: {"a":1,"b":2}',
+            }
+        );
     });
 
     it('fires exceptions on window for strings', () => {
@@ -182,8 +194,14 @@ describe('exceptions', () => {
         store.dispatch({
             type: 1,
         });
-        expect(onerror).toHaveBeenCalledWith({
-            message: 'Unhandled exception in tale: error',
-        });
+        expect(onerror).toHaveBeenCalledWith(
+            'Unhandled exception in tale: error',
+            '',
+            0,
+            0,
+            {
+                message: 'Unhandled exception in tale: error',
+            }
+        );
     });
 });

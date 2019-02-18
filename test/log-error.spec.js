@@ -15,10 +15,16 @@ describe('log-error', () => {
         jest.runAllTimers();
 
         expect(onerror).toHaveBeenCalledTimes(1);
-        expect(onerror).toHaveBeenLastCalledWith({
-            message: 'Unhandled exception in tale: ' + error,
-            stack: error.stack,
-        });
+        expect(onerror).toHaveBeenLastCalledWith(
+            'Unhandled exception in tale: ' + error,
+            '',
+            0,
+            0,
+            {
+                message: 'Unhandled exception in tale: ' + error,
+                stack: error.stack,
+            }
+        );
     });
 
     it('doesn\'t log if no window.onerror', () => {
@@ -43,9 +49,15 @@ describe('log-error', () => {
         jest.runAllTimers();
 
         expect(onerror).toHaveBeenCalledTimes(1);
-        expect(onerror).toHaveBeenLastCalledWith({
-            message: 'Unhandled exception in tale: ' + JSON.stringify(obj),
-        });
+        expect(onerror).toHaveBeenLastCalledWith(
+            'Unhandled exception in tale: ' + JSON.stringify(obj),
+            '',
+            0,
+            0,
+            {
+                message: 'Unhandled exception in tale: ' + JSON.stringify(obj),
+            }
+        );
     });
 
     it('logs a primitive', () => {
@@ -53,8 +65,14 @@ describe('log-error', () => {
         jest.runAllTimers();
 
         expect(onerror).toHaveBeenCalledTimes(1);
-        expect(onerror).toHaveBeenLastCalledWith({
-            message: 'Unhandled exception in tale: ' + 1,
-        });
+        expect(onerror).toHaveBeenLastCalledWith(
+            'Unhandled exception in tale: ' + 1,
+            '',
+            0,
+            0,
+            {
+                message: 'Unhandled exception in tale: ' + 1,
+            }
+        );
     });
 });
