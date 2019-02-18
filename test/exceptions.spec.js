@@ -146,8 +146,6 @@ describe('exceptions', () => {
         store.dispatch({
             type: 1,
         });
-        expect(onerror).not.toHaveBeenCalled();
-        jest.runAllTimers();
         expect(onerror).toHaveBeenCalledWith({
             message: 'Unhandled exception in tale: Error: an error',
             stack: exception.stack,
@@ -168,8 +166,6 @@ describe('exceptions', () => {
         store.dispatch({
             type: 1,
         });
-        expect(onerror).not.toHaveBeenCalled();
-        jest.runAllTimers();
         expect(onerror).toHaveBeenCalledWith({
             message: 'Unhandled exception in tale: {"a":1,"b":2}',
         });
@@ -186,8 +182,6 @@ describe('exceptions', () => {
         store.dispatch({
             type: 1,
         });
-        expect(onerror).not.toHaveBeenCalled();
-        jest.runAllTimers();
         expect(onerror).toHaveBeenCalledWith({
             message: 'Unhandled exception in tale: error',
         });
