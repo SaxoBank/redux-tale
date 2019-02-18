@@ -1,3 +1,8 @@
+#### v1.1.5
+
++ window.onerror is now called with the correct standard arguments
++ window.onerror is now called synchronously
+
 #### v1.1.4
 
 + Improvements to error handling
