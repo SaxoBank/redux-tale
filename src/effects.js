@@ -1,5 +1,3 @@
-import { logError } from './log-error';
-
 export const CALL = 'CALL';
 export function call(func, ...args) {
     let context = undefined;
@@ -35,23 +33,12 @@ export function take(pattern) {
     };
 }
 
-function onTaskCatchError(isThrown, value) {
-    if (isThrown) {
-        logError(value);
-    }
-}
-
 export function takeEvery(pattern, worker, ...args) {
     return function* () {
         // eslint-disable-next-line no-constant-condition
         while (true) {
             const action = yield take(pattern);
-            const task = yield spawn(worker, action, ...args);
-            if (task.done) {
-                onTaskCatchError(task.thrown, task.value);
-            } else {
-                task.callback = onTaskCatchError;
-            }
+            yield spawn(worker, action, ...args);
         }
     };
 }
@@ -66,11 +53,6 @@ export function takeLatest(pattern, worker, ...args) {
                 task.cancel();
             }
             task = yield spawn(worker, action, ...args);
-            if (task.done) {
-                onTaskCatchError(task.thrown, task.value);
-            } else {
-                task.callback = onTaskCatchError;
-            }
         }
     };
 }
