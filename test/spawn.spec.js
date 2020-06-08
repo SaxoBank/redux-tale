@@ -7,6 +7,7 @@ describe('spawn', () => {
 
     let taleMiddleware;
     let newState;
+    let onerror;
 
     beforeEach(() => {
         taleMiddleware = createTaleMiddleware();
@@ -15,6 +16,8 @@ describe('spawn', () => {
             () => newState,
             applyMiddleware(taleMiddleware)
         );
+        onerror = jest.fn();
+        window.onerror = onerror;
     });
 
     it('spawns tasks without waiting', () => {
@@ -48,6 +51,7 @@ describe('spawn', () => {
             taleMiddleware.run(test);
             jest.runAllTimers();
             expect(order).toEqual([1, 2]);
+            expect(onerror).not.toHaveBeenCalled();
         });
 
         it('works when async', () => {
@@ -66,6 +70,7 @@ describe('spawn', () => {
             taleMiddleware.run(test);
             jest.runAllTimers();
             expect(order).toEqual([1, 2, 3]);
+            expect(onerror).not.toHaveBeenCalled();
         });
 
         it('works when async depending on sub spawn', () => {
@@ -104,6 +109,7 @@ describe('spawn', () => {
         taleMiddleware.run(test);
         jest.runAllTimers();
         expect(order).toEqual([1, 2]);
+        expect(onerror).toHaveBeenCalledTimes(1);
     });
 
     it('spawned tasks have isRunning - returns true when done', () => {
@@ -126,5 +132,27 @@ describe('spawn', () => {
         }
         taleMiddleware.run(test);
         expect(task.isRunning()).toEqual(true);
+    });
+
+    it('fires exceptions on window when throwing sync', () => {
+        function *test() {
+            yield spawn(function* test2() {
+                throw new Error();
+            });
+        }
+        taleMiddleware.run(test);
+        expect(onerror).toHaveBeenCalledTimes(1);
+    });
+
+    it('fires exceptions on window when throwing async', () => {
+        function *test() {
+            yield spawn(function*() {
+                yield Promise.resolve();
+                throw new Error();
+            });
+        }
+        taleMiddleware.run(test);
+        jest.runAllTimers();
+        expect(onerror).toHaveBeenCalledTimes(1);
     });
 });

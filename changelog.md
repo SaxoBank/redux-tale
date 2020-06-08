@@ -1,3 +1,8 @@
+#### v1.2.0
+
+* exceptions thrown in spawned tasks automatically call window.onerror (like takeEvery and takeLatest already do)
+* exceptions thrown from top level sagas call through to window.onerror
+
 #### v1.1.5
 
 + window.onerror is now called with the correct standard arguments

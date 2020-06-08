@@ -84,7 +84,7 @@ function createTaleRunner({ dispatch, getState }) {
                     spawnTask.callback = onTaskCatchError;
                 }
 
-                return { value: task };
+                return { value: spawnTask };
             }
 
             if (value.__reduxTaleType === effects.SELECT) {
@@ -238,7 +238,13 @@ function createTaleRunner({ dispatch, getState }) {
     return {
         emit: actionEmitter.emit,
         run(generator, ...args) {
-            return runGenObj(generator(...args));
+            const taskBeingRun = runGenObj(generator(...args));
+            if (taskBeingRun.done) {
+                onTaskCatchError(taskBeingRun.thrown, taskBeingRun.value);
+            } else {
+                taskBeingRun.callback = onTaskCatchError;
+            }
+            return taskBeingRun;
         },
     };
 }
