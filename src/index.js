@@ -3,9 +3,16 @@ import Task from './task';
 import delay from './delay';
 import { handleRaceEffect } from './race';
 import { makeActionEmitter } from './action-emitter';
+import { logError } from './log-error';
 
 export { effects };
 export { delay };
+
+function onTaskCatchError(isThrown, value) {
+    if (isThrown) {
+        logError(value);
+    }
+}
 
 /**
  * Creates a runner that can run the tales
@@ -69,7 +76,15 @@ function createTaleRunner({ dispatch, getState }) {
             }
 
             if (value.__reduxTaleType === effects.SPAWN) {
-                return { value: runGenObj(value.worker(...value.args)) };
+                const spawnTask = runGenObj(value.worker(...value.args));
+
+                if (spawnTask.done) {
+                    onTaskCatchError(spawnTask.thrown, spawnTask.value);
+                } else {
+                    spawnTask.callback = onTaskCatchError;
+                }
+
+                return { value: spawnTask };
             }
 
             if (value.__reduxTaleType === effects.SELECT) {
@@ -205,6 +220,7 @@ function createTaleRunner({ dispatch, getState }) {
                 if (!syncResult) {
                     break;
                 }
+
                 if (syncResult.thrown) {
                     isNextStatementThrown = true;
                 }
@@ -222,7 +238,13 @@ function createTaleRunner({ dispatch, getState }) {
     return {
         emit: actionEmitter.emit,
         run(generator, ...args) {
-            return runGenObj(generator(...args));
+            const taskBeingRun = runGenObj(generator(...args));
+            if (taskBeingRun.done) {
+                onTaskCatchError(taskBeingRun.thrown, taskBeingRun.value);
+            } else {
+                taskBeingRun.callback = onTaskCatchError;
+            }
+            return taskBeingRun;
         },
     };
 }

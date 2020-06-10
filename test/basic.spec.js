@@ -5,6 +5,7 @@ describe('basic tests', () => {
 
     let taleMiddleware;
     let newState;
+    let onerror;
 
     beforeEach(() => {
         taleMiddleware = createTaleMiddleware();
@@ -13,6 +14,8 @@ describe('basic tests', () => {
             () => newState,
             applyMiddleware(taleMiddleware)
         );
+        onerror = jest.fn();
+        window.onerror = onerror;
     });
 
     it('runs a generator immediately', () => {
@@ -24,6 +27,7 @@ describe('basic tests', () => {
 
         taleMiddleware.run(test);
         expect(isRun).toEqual(true);
+        expect(onerror).not.toHaveBeenCalled();
     });
 
     it('handles a promise resolving', () => {
@@ -39,6 +43,7 @@ describe('basic tests', () => {
         expect(isRun).toEqual(false);
         jest.runAllTimers();
         expect(isRun).toEqual(true);
+        expect(onerror).not.toHaveBeenCalled();
     });
 
     it('handles a promise rejecting', () => {
@@ -58,6 +63,7 @@ describe('basic tests', () => {
         expect(isRun).toEqual(false);
         jest.runAllTimers();
         expect(isRun).toEqual(true);
+        expect(onerror).not.toHaveBeenCalled();
     });
 
     it('handles multiple promises', () => {
@@ -253,4 +259,23 @@ describe('basic tests', () => {
         expect(order).toEqual([1, 2, 3]);
     });
 
+    it('bubbles exceptions to window.onError - sync', () => {
+        function *test() {
+            throw new Error();
+        }
+
+        taleMiddleware.run(test);
+        expect(onerror).toHaveBeenCalledTimes(1);
+    });
+
+    it('bubbles exceptions to window.onError - sync', () => {
+        function *test() {
+            yield Promise.resolve();
+            throw new Error();
+        }
+
+        taleMiddleware.run(test);
+        jest.runAllTimers();
+        expect(onerror).toHaveBeenCalledTimes(1);
+    });
 });
