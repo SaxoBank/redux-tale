@@ -26,10 +26,11 @@ export function apply(context, func, args) {
 }
 
 export const TAKE = 'TAKE';
-export function take(pattern) {
+export function take(pattern, pattern2ndArg) {
     return {
         __reduxTaleType: TAKE,
         pattern,
+        pattern2ndArg,
     };
 }
 

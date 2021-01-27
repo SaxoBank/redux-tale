@@ -71,7 +71,7 @@ function createTaleRunner({ dispatch, getState }) {
     function resolveEffect(value, task, makeCallback, callbackArg) {
         try {
             if (value.__reduxTaleType === effects.TAKE) {
-                actionEmitter.take(value.pattern, makeCallback(task, callbackArg));
+                actionEmitter.take(value.pattern, value.pattern2ndArg, makeCallback(task, callbackArg));
                 return false;
             }
 

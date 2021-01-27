@@ -1,4 +1,4 @@
-function testPatternArray(patterns, action) {
+function testPatternArray(patterns, _, action) {
     for (let i = 0; i < patterns.length; i++) {
         if (action.type === patterns[i]) {
             return true;
@@ -7,21 +7,28 @@ function testPatternArray(patterns, action) {
     return false;
 }
 
-function testPatternEqual(pattern, action) {
+function testPatternEqual(pattern, _, action) {
     return pattern === action.type;
 }
 
-function functionPatternChecker(pattern, action) {
+function functionPatternChecker(pattern, _, action) {
     return pattern(action);
+}
+
+function toolkitActionPatternChecker(pattern, optionalMatcher, action) {
+    return action.type === pattern.type && (!optionalMatcher || optionalMatcher(action));
 }
 
 function truthy() {
     return true;
 }
 
-export function getPatternChecker(pattern) {
+export function getPatternChecker(pattern, pattern2ndArg) {
     if (!pattern || pattern === '*') {
         return truthy;
+    }
+    if (typeof pattern === 'function' && typeof pattern.type === 'string') {
+        return toolkitActionPatternChecker;
     }
     if (Array.isArray(pattern)) {
         return testPatternArray;

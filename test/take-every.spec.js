@@ -237,4 +237,26 @@ describe('take-every', () => {
         expect(order).toEqual([action]);
         expect(onerror).not.toHaveBeenCalled();
     });
+
+    it('takes toolkit action creator', () => {
+        const order = [];
+
+        function actionCreator() {
+            return { type: '3' };
+        }
+        actionCreator.type = '3';
+
+        function *every(action) {
+            order.push(action);
+        }
+
+        taleMiddleware.run(takeEvery(actionCreator, every));
+        const action = {
+            type: 1,
+        };
+        store.dispatch(action);
+        store.dispatch(actionCreator());
+        expect(order).toEqual([actionCreator()]);
+        expect(onerror).not.toHaveBeenCalled();
+    });
 });

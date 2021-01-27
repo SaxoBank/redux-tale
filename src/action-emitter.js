@@ -8,10 +8,11 @@ import { logError } from './log-error';
 export function makeActionEmitter() {
     const listeners = [];
     return {
-        take(pattern, callback) {
+        take(pattern, pattern2ndArg, callback) {
             listeners.push({
                 pattern,
-                patternChecker: getPatternChecker(pattern),
+                pattern2ndArg,
+                patternChecker: getPatternChecker(pattern, pattern2ndArg),
                 callback,
             });
         },
@@ -19,7 +20,7 @@ export function makeActionEmitter() {
             const listenersToFire = [];
             for (let i = 0; i < listeners.length; i++) {
                 const listener = listeners[i];
-                const isValid = listener.patternChecker(listener.pattern, action);
+                const isValid = listener.patternChecker(listener.pattern, listener.pattern2ndArg, action);
 
                 // remove the listener first to avoid the callback firing
                 // an action that would try and restart the saga

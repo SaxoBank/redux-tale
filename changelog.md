@@ -1,3 +1,8 @@
+#### v1.3.0
+
+* You can now pass redux-toolkit like aciton creators as match patterns e.g.
+  `yield take(actionCreator)` and `yield take(actionCreator, actionMatcher)` and `takeEvery(actionCreator, saga)`
+
 #### v1.2.0
 
 * exceptions thrown in spawned tasks automatically call window.onerror (like takeEvery and takeLatest already do)
