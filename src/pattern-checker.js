@@ -1,6 +1,11 @@
 function testPatternArray(patterns, _, action) {
     for (let i = 0; i < patterns.length; i++) {
-        if (action.type === patterns[i]) {
+        const pattern = patterns[i];
+        if (typeof pattern === 'function' && typeof pattern.type === 'string') {
+            if (action.type === pattern.type) {
+                return true;
+            }
+        } else if (action.type === pattern) {
             return true;
         }
     }
