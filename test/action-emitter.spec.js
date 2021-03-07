@@ -16,8 +16,8 @@ describe('emitter', () => {
         const listener1 = jest.fn();
         const listener2 = jest.fn();
 
-        actionEmitter.take('*', listener1);
-        actionEmitter.take('*', listener2);
+        actionEmitter.take('*', undefined, listener1);
+        actionEmitter.take('*', undefined, listener2);
 
         actionEmitter.emit(1);
 
@@ -36,7 +36,7 @@ describe('emitter', () => {
 
         const listener1 = jest.fn();
 
-        actionEmitter.take('*', () => actionEmitter.take('*', listener1));
+        actionEmitter.take('*', undefined, () => actionEmitter.take('*', undefined, listener1));
 
         actionEmitter.emit(1);
 
@@ -63,12 +63,12 @@ describe('emitter', () => {
         let listener2Calls = 0;
         const listener2 = () => {
             listener2Calls++;
-            actionEmitter.take('*', listener3);
+            actionEmitter.take('*', undefined, listener3);
             actionEmitter.emit(2);
         };
 
-        actionEmitter.take('*', listener1);
-        actionEmitter.take('*', listener2);
+        actionEmitter.take('*', undefined, listener1);
+        actionEmitter.take('*', undefined, listener2);
 
         actionEmitter.emit(1);
 
@@ -95,12 +95,12 @@ describe('emitter', () => {
         let listener2Calls = 0;
         const listener2 = () => {
             listener2Calls++;
-            actionEmitter.take('*', listener3);
+            actionEmitter.take('*', undefined, listener3);
             actionEmitter.emit(2);
         };
 
         actionEmitter.take(() => false, listener1);
-        actionEmitter.take('*', listener2);
+        actionEmitter.take('*', undefined, listener2);
 
         actionEmitter.emit(1);
 
@@ -121,9 +121,9 @@ describe('emitter', () => {
         const listener2 = jest.fn();
         const listener3 = jest.fn(() => { throw new Error(); });
 
-        actionEmitter.take('*', listener1);
-        actionEmitter.take('*', listener2);
-        actionEmitter.take('*', listener3);
+        actionEmitter.take('*', undefined, listener1);
+        actionEmitter.take('*', undefined, listener2);
+        actionEmitter.take('*', undefined, listener3);
 
         actionEmitter.emit(1);
         jest.runAllTimers();

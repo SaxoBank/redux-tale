@@ -237,4 +237,78 @@ describe('take-every', () => {
         expect(order).toEqual([action]);
         expect(onerror).not.toHaveBeenCalled();
     });
+
+    it('takes toolkit action creator', () => {
+        const order = [];
+
+        function actionCreator() {
+            return { type: '3' };
+        }
+        actionCreator.type = '3';
+
+        function *every(action) {
+            order.push(action);
+        }
+
+        taleMiddleware.run(takeEvery(actionCreator, every));
+        const action = {
+            type: 1,
+        };
+        store.dispatch(action);
+        store.dispatch(actionCreator());
+        expect(order).toEqual([actionCreator()]);
+        expect(onerror).not.toHaveBeenCalled();
+    });
+
+    it('takes array of toolkit action creator', () => {
+        const order = [];
+
+        function actionCreator1() {
+            return { type: '3' };
+        }
+        actionCreator1.type = '3';
+        function actionCreator2() {
+            return { type: '4' };
+        }
+        actionCreator2.type = '4';
+
+        function *every(action) {
+            order.push(action);
+        }
+
+        taleMiddleware.run(takeEvery([actionCreator1, actionCreator2], every));
+        const action = {
+            type: 1,
+        };
+        store.dispatch(action);
+        store.dispatch(actionCreator1());
+        store.dispatch(actionCreator2());
+        expect(order).toEqual([actionCreator1(), actionCreator2()]);
+        expect(onerror).not.toHaveBeenCalled();
+    });
+
+    it('takes array of strings', () => {
+        const order = [];
+
+        function actionCreator1() {
+            return { type: '3' };
+        }
+        function actionCreator2() {
+            return { type: '4' };
+        }
+
+        function *every(action) {
+            order.push(action);
+        }
+
+        taleMiddleware.run(takeEvery(['3', '4'], every));
+        const action = {
+            type: 1,
+        };
+        store.dispatch(action);
+        store.dispatch(actionCreator1());
+        store.dispatch(actionCreator2());
+        expect(order).toEqual([actionCreator1(), actionCreator2()]);
+        expect(onerror).not.toHaveBeenCalled();
+    });
 });
