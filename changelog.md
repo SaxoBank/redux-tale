@@ -1,3 +1,7 @@
+#### v1.3.1
+
+* Support toolkit actions in pattern matching arrays
+
 #### v1.3.0
 
 * You can now pass redux-toolkit like aciton creators as match patterns e.g.
