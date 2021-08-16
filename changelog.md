@@ -1,3 +1,6 @@
+#### v1.4.0
+* Detection of potentially-unhandled actions
+
 #### v1.3.1
 
 * Support toolkit actions in pattern matching arrays

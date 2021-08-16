@@ -3,10 +3,12 @@ import { makeActionEmitter } from '../src/action-emitter';
 describe('emitter', () => {
 
     let actionEmitter;
+    let handlePotentiallyUnhandledAction;
     let onerror;
 
     beforeEach(() => {
-        actionEmitter = makeActionEmitter();
+        handlePotentiallyUnhandledAction = jest.fn();
+        actionEmitter = makeActionEmitter(handlePotentiallyUnhandledAction);
         onerror = jest.fn();
         window.onerror = onerror;
     });
@@ -135,5 +137,39 @@ describe('emitter', () => {
         expect(listener3).toHaveBeenCalledTimes(1);
         expect(listener3).toHaveBeenLastCalledWith(false, 1);
         expect(onerror).toHaveBeenCalledTimes(2);
+    });
+
+    it('unhandled actions: calls callback when there are no listeners', () => {
+        actionEmitter.emit({ type: 'foo' });
+
+        expect(handlePotentiallyUnhandledAction).toBeCalled();
+    });
+
+    it('unhandled actions: calls callback when the only listener is take(*)', () => {
+        actionEmitter.take('*', undefined, function listener() {});
+
+        actionEmitter.emit({ type: 'foo' });
+
+        expect(handlePotentiallyUnhandledAction).toBeCalled();
+    });
+
+    it('unhandled actions: calls callback when the only listener\'s pattern matcher is specifically denoted as not-picky ', () => {
+        function patternMatcher(action) { return action.type !== 'match-everything-except-this'; }
+        patternMatcher.isPicky = false;
+
+        actionEmitter.take(patternMatcher, undefined, function listener() {});
+
+        actionEmitter.emit({ type: 'foo' });
+
+        expect(handlePotentiallyUnhandledAction).toBeCalled();
+    });
+
+    it('unhandled actions: doesnt call callback when a picky listener is present', () => {
+        actionEmitter.take('foo', undefined, function listener() {});
+        actionEmitter.take('*', undefined, function listener() {});
+
+        actionEmitter.emit({ type: 'foo' });
+
+        expect(handlePotentiallyUnhandledAction).not.toBeCalled();
     });
 });
