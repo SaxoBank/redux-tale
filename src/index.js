@@ -262,7 +262,8 @@ function createTaleRunner({ dispatch, getState, onPotentiallyUnhandledAction }) 
  * @param {onPotentiallyUnhandledAction} [options.onPotentiallyUnhandledAction] Called when no listener processed an action.
  *      Use it to help detect circumstances where no saga was running to process a dispatched action intended for it.
  *      Listeners with a broad interest of actions must be ignored, otherwise many/all actions will always be considered handled.
- *      Mark listeners using the helper `patternMatcherLoose(matcher)` to ignore them. The `*` pattern is always ignored.
+ *      Mark listener patterns with a property `isLoose = true` (or use the helper `patternMatcherLoose(matcher)`) to ignore them.
+ *      The `*` pattern is always ignored.
  */
 export default function createTaleMiddleware(options = {}) {
     options.onPotentiallyUnhandledAction = options.onPotentiallyUnhandledAction || function noop() {};

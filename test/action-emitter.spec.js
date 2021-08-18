@@ -164,7 +164,7 @@ describe('emitter', () => {
         expect(handlePotentiallyUnhandledAction).toBeCalled();
     });
 
-    it('unhandled actions: doesnt call callback when a non-ignored listener is present', () => {
+    it('unhandled actions: doesnt call callback when a non-loose listener is present', () => {
         actionEmitter.take('foo', undefined, function listener() {});
         actionEmitter.take('*', undefined, function listener() {});
 
