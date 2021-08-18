@@ -11,13 +11,10 @@ export function makeActionEmitter(onPotentiallyUnhandledAction) {
     const listeners = [];
     return {
         take(pattern, pattern2ndArg, callback) {
-            const ignoreForUnhandledActionDetection = pattern === '*' || pattern.ignoreForUnhandledActionDetection;
-
             listeners.push({
                 pattern,
                 pattern2ndArg,
                 patternChecker: getPatternChecker(pattern, pattern2ndArg),
-                ignoreForUnhandledActionDetection,
                 callback,
             });
         },
@@ -36,7 +33,7 @@ export function makeActionEmitter(onPotentiallyUnhandledAction) {
                 }
             }
 
-            if (listenersToFire.every((listener) => listener.ignoreForUnhandledActionDetection)) {
+            if (listenersToFire.every(({ pattern }) => pattern === '*' || pattern.ignoreForUnhandledActionDetection)) {
                 onPotentiallyUnhandledAction(action);
             }
 
