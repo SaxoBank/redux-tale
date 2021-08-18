@@ -2,11 +2,12 @@ import * as effects from './effects';
 import Task from './task';
 import delay from './delay';
 import { handleRaceEffect } from './race';
-import { makeActionEmitter } from './action-emitter';
+import { makeActionEmitter, patternMatcherChoosy, patternMatcherLoose } from './action-emitter';
 import { logError } from './log-error';
 
 export { effects };
 export { delay };
+export { patternMatcherChoosy, patternMatcherLoose };
 
 function onTaskCatchError(isThrown, value) {
     if (isThrown) {

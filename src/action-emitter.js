@@ -56,3 +56,33 @@ export function makeActionEmitter(onPotentiallyUnhandledAction) {
         },
     };
 }
+
+/**
+ * Marks the given matcher as one that does count for unhandled action detection.
+ * Only matchers that match a narrow range of actions should be annotated using this.
+ *
+ * @see patternMatcherLoose
+ *
+ * @param matcher
+ * @returns marked matcher
+ */
+export function patternMatcherChoosy(matcher) {
+    matcher.ignoreForUnhandledActionDetection = false;
+
+    return matcher;
+}
+
+/**
+ * Marks the given matcher as one to be ignored for unhandled action detection.
+ * Matchers that match a wide range of actions must be marked using this.
+ *
+ * @see patternMatcherChoosy
+ *
+ * @param matcher
+ * @returns marked matcher
+ */
+export function patternMatcherLoose(matcher) {
+    matcher.ignoreForUnhandledActionDetection = true;
+
+    return matcher;
+}
