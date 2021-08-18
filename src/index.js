@@ -258,11 +258,11 @@ function createTaleRunner({ dispatch, getState, onPotentiallyUnhandledAction }) 
 /**
  * The redux middleware which is inserted to catch actions and give dispatch (put) and getState (select) capability
  *
- * [1] A "picky" listener is a saga/take with a narrow interest of actions which it will process, for example one specific type of action.
- * All listener patterns except `*` are considered picky be default. Patterns can be marked as not-picky by giving them a property `isPicky = false`.
+ * [1] A "choosy" listener is a saga/take with a narrow interest of actions which it will process, for example one specific type of action.
+ * All listener patterns except `*` are considered choosy be default. Patterns can be marked as not-choosy by giving them a property `isChoosy = false`.
  *
  * @param {Object} [options]
- * @param {onPotentiallyUnhandledAction} [options.onPotentiallyUnhandledAction] Called when no picky listener [1] processed an action.
+ * @param {onPotentiallyUnhandledAction} [options.onPotentiallyUnhandledAction] Called when no choosy listener [1] processed an action.
  *      Use it to help detect circumstances where no saga was running to process a dispatched action intended for it.
  */
 export default function createTaleMiddleware(options = {}) {

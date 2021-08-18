@@ -15,7 +15,7 @@ export function makeActionEmitter(onPotentiallyUnhandledAction) {
                 pattern,
                 pattern2ndArg,
                 patternChecker: getPatternChecker(pattern, pattern2ndArg),
-                isPicky: isPickyPattern(pattern),
+                isChoosy: isChoosyPattern(pattern),
                 callback,
             });
         },
@@ -34,7 +34,7 @@ export function makeActionEmitter(onPotentiallyUnhandledAction) {
                 }
             }
 
-            if (!listenersToFire.some((listener) => listener.isPicky)) {
+            if (!listenersToFire.some((listener) => listener.isChoosy)) {
                 onPotentiallyUnhandledAction(action);
             }
 
@@ -55,6 +55,6 @@ export function makeActionEmitter(onPotentiallyUnhandledAction) {
     };
 }
 
-function isPickyPattern(pattern) {
-    return pattern !== '*' && pattern.isPicky !== false;
+function isChoosyPattern(pattern) {
+    return pattern !== '*' && pattern.isChoosy !== false;
 }
