@@ -153,9 +153,9 @@ describe('emitter', () => {
         expect(handlePotentiallyUnhandledAction).toBeCalled();
     });
 
-    it('unhandled actions: calls callback when the only listener\'s pattern matcher is specifically denoted as not-choosy', () => {
+    it('unhandled actions: calls callback when the only listener\'s pattern matcher is marked ignored', () => {
         function patternMatcher(action) { return action.type !== 'match-everything-except-this'; }
-        patternMatcher.isChoosy = false;
+        patternMatcher.ignoreForUnhandledActionDetection = true;
 
         actionEmitter.take(patternMatcher, undefined, function listener() {});
 
@@ -164,7 +164,7 @@ describe('emitter', () => {
         expect(handlePotentiallyUnhandledAction).toBeCalled();
     });
 
-    it('unhandled actions: doesnt call callback when a choosy listener is present', () => {
+    it('unhandled actions: doesnt call callback when a non-ignored listener is present', () => {
         actionEmitter.take('foo', undefined, function listener() {});
         actionEmitter.take('*', undefined, function listener() {});
 

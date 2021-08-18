@@ -36,7 +36,7 @@ export function makeActionEmitter(onPotentiallyUnhandledAction) {
                 }
             }
 
-            if (!listenersToFire.some((listener) => listener.isChoosy)) {
+            if (listenersToFire.every((listener) => listener.ignoreForUnhandledActionDetection)) {
                 onPotentiallyUnhandledAction(action);
             }
 
