@@ -1,3 +1,7 @@
+import { patternMatcherChoosy, patternMatcherLoose } from './action-emitter';
+
+export { patternMatcherChoosy, patternMatcherLoose };
+
 export const CALL = 'CALL';
 export function call(func, ...args) {
     let context = undefined;
