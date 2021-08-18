@@ -11,11 +11,13 @@ export function makeActionEmitter(onPotentiallyUnhandledAction) {
     const listeners = [];
     return {
         take(pattern, pattern2ndArg, callback) {
+            const ignoreForUnhandledActionDetection = pattern === '*' || pattern.ignoreForUnhandledActionDetection;
+
             listeners.push({
                 pattern,
                 pattern2ndArg,
                 patternChecker: getPatternChecker(pattern, pattern2ndArg),
-                isChoosy: isChoosyPattern(pattern),
+                ignoreForUnhandledActionDetection,
                 callback,
             });
         },
@@ -53,8 +55,4 @@ export function makeActionEmitter(onPotentiallyUnhandledAction) {
             }
         },
     };
-}
-
-function isChoosyPattern(pattern) {
-    return pattern !== '*' && pattern.isChoosy !== false;
 }
