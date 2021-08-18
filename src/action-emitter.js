@@ -33,7 +33,7 @@ export function makeActionEmitter(onPotentiallyUnhandledAction) {
                 }
             }
 
-            if (listenersToFire.every(({ pattern }) => pattern === '*' || pattern.ignoreForUnhandledActionDetection)) {
+            if (listenersToFire.every(({ pattern }) => pattern === '*' || pattern.isLoose)) {
                 onPotentiallyUnhandledAction(action);
             }
 
@@ -64,7 +64,7 @@ export function makeActionEmitter(onPotentiallyUnhandledAction) {
  * @returns marked matcher
  */
 export function patternMatcherChoosy(matcher) {
-    matcher.ignoreForUnhandledActionDetection = false;
+    matcher.isLoose = false;
 
     return matcher;
 }
@@ -79,7 +79,7 @@ export function patternMatcherChoosy(matcher) {
  * @returns marked matcher
  */
 export function patternMatcherLoose(matcher) {
-    matcher.ignoreForUnhandledActionDetection = true;
+    matcher.isLoose = true;
 
     return matcher;
 }

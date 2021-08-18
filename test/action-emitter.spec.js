@@ -153,9 +153,9 @@ describe('emitter', () => {
         expect(handlePotentiallyUnhandledAction).toBeCalled();
     });
 
-    it('unhandled actions: calls callback when the only listener\'s pattern matcher is marked ignored', () => {
+    it('unhandled actions: calls callback when the only listener\'s pattern matcher is marked as loose', () => {
         function patternMatcher(action) { return action.type !== 'match-everything-except-this'; }
-        patternMatcher.ignoreForUnhandledActionDetection = true;
+        patternMatcher.isLoose = true;
 
         actionEmitter.take(patternMatcher, undefined, function listener() {});
 
