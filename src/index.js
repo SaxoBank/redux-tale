@@ -18,11 +18,12 @@ function onTaskCatchError(isThrown, value) {
  * Creates a runner that can run the tales
  * @param dispatch
  * @param getState
+ * @param onPotentiallyUnhandledAction
  * @returns { emit(action), run(tale) }
  */
-function createTaleRunner({ dispatch, getState }) {
+function createTaleRunner({ dispatch, getState, onPotentiallyUnhandledAction }) {
 
-    const actionEmitter = makeActionEmitter();
+    const actionEmitter = makeActionEmitter(onPotentiallyUnhandledAction);
 
     function runGenObj(genObj) {
         return runTask(new Task(genObj));
@@ -250,16 +251,27 @@ function createTaleRunner({ dispatch, getState }) {
 }
 
 /**
- * The redux middleware which is inserted to catch actions and give dispatch (put) and getState (select) capability
- * @param dispatch
- * @param getState
- * @returns tale enabled redux
+ * @callback onPotentiallyUnhandledAction
+ * @param {Object} action - said action
  */
-export default function createTaleMiddleware() {
+
+/**
+ * The redux middleware which is inserted to catch actions and give dispatch (put) and getState (select) capability
+ *
+ * @param {Object} [options]
+ * @param {onPotentiallyUnhandledAction} [options.onPotentiallyUnhandledAction] Called when no listener processed an action.
+ *      Use it to help detect circumstances where no saga was running to process a dispatched action intended for it.
+ *      Listeners with a broad interest of actions must be ignored, otherwise many/all actions will always be considered handled.
+ *      Mark listener patterns with a property `isLoose = true` (or use the helper `patternMatcherLoose(matcher)`) to ignore them.
+ *      The `*` pattern is always ignored.
+ */
+export default function createTaleMiddleware(options = {}) {
+    options.onPotentiallyUnhandledAction = options.onPotentiallyUnhandledAction || function noop() {};
+
     let taleRunner;
     function taleMiddleware({ dispatch, getState }) {
 
-        taleRunner = createTaleRunner({ dispatch, getState });
+        taleRunner = createTaleRunner({ dispatch, getState, onPotentiallyUnhandledAction: options.onPotentiallyUnhandledAction });
         taleMiddleware.run = taleRunner.run;
 
         return (nextDispatch) => (action) => {

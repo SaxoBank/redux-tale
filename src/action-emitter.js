@@ -3,9 +3,11 @@ import { logError } from './log-error';
 
 /**
  * Fires take's when an action matches
+ *
+ * @param onPotentiallyUnhandledAction
  * @returns {{listen: (function), emit: (function)}}
  */
-export function makeActionEmitter() {
+export function makeActionEmitter(onPotentiallyUnhandledAction) {
     const listeners = [];
     return {
         take(pattern, pattern2ndArg, callback) {
@@ -31,6 +33,10 @@ export function makeActionEmitter() {
                 }
             }
 
+            if (listenersToFire.every(({ pattern }) => pattern === '*' || pattern.isLoose)) {
+                onPotentiallyUnhandledAction(action);
+            }
+
             // delay firing listeners until the listeners have all been removed
             // this means that if an action is taken by two sagas and one of those
             // sagas emits an action taken by the 2nd saga, it will not pick it up
@@ -46,4 +52,34 @@ export function makeActionEmitter() {
             }
         },
     };
+}
+
+/**
+ * Marks the given matcher as one that does count for unhandled action detection.
+ * Only matchers that match a narrow range of actions should be annotated using this.
+ *
+ * @see patternMatcherLoose
+ *
+ * @param matcher
+ * @returns marked matcher
+ */
+export function patternMatcherChoosy(matcher) {
+    matcher.isLoose = false;
+
+    return matcher;
+}
+
+/**
+ * Marks the given matcher as one to be ignored for unhandled action detection.
+ * Matchers that match a wide range of actions must be marked using this.
+ *
+ * @see patternMatcherChoosy
+ *
+ * @param matcher
+ * @returns marked matcher
+ */
+export function patternMatcherLoose(matcher) {
+    matcher.isLoose = true;
+
+    return matcher;
 }
