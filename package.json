@@ -1,6 +1,6 @@
 {
   "name": "redux-tale",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "engines": {
     "node": ">=4"
   },

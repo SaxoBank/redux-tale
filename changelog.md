@@ -1,3 +1,6 @@
+#### v1.4.1
+* v1.4.0 was not built before publishing, this just corrects that
+
 #### v1.4.0
 * Detection of potentially-unhandled actions
 
