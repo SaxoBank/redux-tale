@@ -5,6 +5,13 @@ function getErrorObject(value) {
             stack: value.stack,
         };
     }
+    
+    if (value && value.error && value.error.message && value.error.stack) {
+        return {
+            message: 'Unhandled exception is tale: ' + value.error.message,
+            stack: value.error.stack,
+        };
+    }
 
     if (typeof value === 'object') {
         return {
