@@ -8,7 +8,7 @@ function getErrorObject(value) {
     
     if (value && value.error && value.error.message && value.error.stack) {
         return {
-            message: 'Unhandled exception is tale: ' + value.error.message,
+            message: 'Unhandled exception in tale: ' + value.error.message,
             stack: value.error.stack,
         };
     }
