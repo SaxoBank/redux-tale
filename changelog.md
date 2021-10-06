@@ -1,3 +1,6 @@
+#### v1.4.2
+* Support for some additional thrown error information
+
 #### v1.4.1
 * v1.4.0 was not built before publishing, this just corrects that
 
