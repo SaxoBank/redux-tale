@@ -172,4 +172,14 @@ describe('emitter', () => {
 
         expect(handlePotentiallyUnhandledAction).not.toBeCalled();
     });
+
+    it('unhandled actions: doesnt call callback when a listener emits an action that it itself is listening for', () => {
+        actionEmitter.take('foo', undefined, function listener() {
+            actionEmitter.emit({ type: 'foo' });
+        });
+
+        actionEmitter.emit({ type: 'foo' });
+
+        expect(handlePotentiallyUnhandledAction).not.toBeCalled();
+    });
 });

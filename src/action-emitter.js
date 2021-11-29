@@ -9,6 +9,7 @@ import { logError } from './log-error';
  */
 export function makeActionEmitter(onPotentiallyUnhandledAction) {
     const listeners = [];
+    const suspendedListeners = [];
     return {
         take(pattern, pattern2ndArg, callback) {
             listeners.push({
@@ -19,23 +20,15 @@ export function makeActionEmitter(onPotentiallyUnhandledAction) {
             });
         },
         emit(action) {
-            const listenersToFire = [];
-            for (let i = 0; i < listeners.length; i++) {
-                const listener = listeners[i];
-                const isValid = listener.patternChecker(listener.pattern, listener.pattern2ndArg, action);
+            const matchingListeners = listeners.filter((listener) => listener.patternChecker(listener.pattern, listener.pattern2ndArg, action));
 
-                // remove the listener first to avoid the callback firing
-                // an action that would try and restart the saga
-                if (isValid) {
-                    listenersToFire.push(listener);
-                    listeners.splice(i, 1);
-                    i--;
-                }
-            }
-
-            if (listenersToFire.every(({ pattern }) => pattern === '*' || pattern.isLoose)) {
+            if (matchingListeners.every(({ pattern }) => pattern === '*' || pattern.isLoose)) {
                 onPotentiallyUnhandledAction(action);
             }
+
+            // avoid the callback firing an action that would try and restart the saga
+            const listenersToFire = matchingListeners.filter((listener) => !suspendedListeners.includes(listener));
+            suspendedListeners.push(...listenersToFire);
 
             // delay firing listeners until the listeners have all been removed
             // this means that if an action is taken by two sagas and one of those
