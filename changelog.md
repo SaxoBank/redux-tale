@@ -1,3 +1,6 @@
+#### v1.4.3
+* Fix false positive for potentially-unhandled action
+
 #### v1.4.2
 * Support for some additional thrown error information
 
