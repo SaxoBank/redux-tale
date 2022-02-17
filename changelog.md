@@ -1,10 +1,17 @@
+#### v1.4.3
+
+* Copy some saxo specific properties from thrown errors
+
 #### v1.4.2
+
 * Support for some additional thrown error information
 
 #### v1.4.1
+
 * v1.4.0 was not built before publishing, this just corrects that
 
 #### v1.4.0
+
 * Detection of potentially-unhandled actions
 
 #### v1.3.1
