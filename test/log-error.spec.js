@@ -11,6 +11,8 @@ describe('log-error', () => {
 
     it('logs an error', () => {
         const error = new Error('test');
+        error.logAsInfo = true;
+        error.isNetworkError = true;
         logError(error);
         jest.runAllTimers();
 
@@ -23,6 +25,8 @@ describe('log-error', () => {
             {
                 message: 'Unhandled exception in tale: ' + error,
                 stack: error.stack,
+                logAsInfo: true,
+                isNetworkError: true,
             }
         );
     });
