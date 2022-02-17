@@ -4,6 +4,8 @@ function getErrorObject(value) {
             message: 'Unhandled exception in tale: ' + value,
             stack: value.stack,
             logAsInfo: value.logAsInfo,
+            isNetworkError: value.isNetworkError,
+
         };
     }
 
